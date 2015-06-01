@@ -1,37 +1,6 @@
 execfile("common.py")
 # RUN: ../../theta-auto.py analysis_top.py 
 
-# 1.a.
-# def ex1a():
-    # b = 5.2
-    #    b = 0.4
-    # print "p-values for a counting experiment with b=", b
-    # for nobs in [1,2,3]: #[5,6,7,8,10,15,20]:
-    #    p = poisson_p_ge(nobs, b)
-    #    Z = p_to_Z(p)
-    
-# print "for nobs=%d: p=%.3g; Z=%.2f" % (nobs, p, Z)
-# Z_a = (nobs - b)/sqrt(b)
-# print "for nobs=%d: p=%.3g; Z=%.2f; Z_a=%.2f" % (nobs, p, Z, Z_a)
-
-# calculate the approximate Z-value based on Wilks' Theorem for a counting experiment
-# with known b (for 1.a. iii.)
-# def calc_Z_w(n, b):
-#    s_hat = max([0.0, n - b])
-#    return sqrt(2 * ( n * log((s_hat + b) / b) - s_hat))
-#
-# ex1a()
-
-
-# 1.b.
-#def generate_poisson(mu0, ntoy, par):
-#    mu=mu0 * (1 + par)
-#    return poisson.rvs(mu, size = ntoy)
-# II. plot the distribution of generated Poisson data; "poisson5.pdf" will be created
-#    in the current working directory you call theta-auto from.
-# data = generate_poisson(5.0, 1000, 0)
-# plot_histogram(data, 'poisson5.pdf')
-
 ###################################################################
 ################## Will not use but is cool easy result
 def generate_poisson(mu0, ntoy):
@@ -68,6 +37,7 @@ def counting_posterior(nobs, b, smin, smax, nscan=1000):
     factor = 1.0 / (sum(y) * delta_s)
     y = [factor * y0 for y0 in y]
     return x, y
+#####################################################
 ########### do the 95% CL
 def get95up(xpost, ypost):
     ytotal = sum(ypost)
@@ -77,13 +47,44 @@ def get95up(xpost, ypost):
         y += ypost[i]
         # print "posterior = %.2g nexp = %.3g ratio = %.4g" % (y,xpost[i],y/ytotal)
         if y/ytotal > 0.95: return xpost[i]
+#####################################################
 ########## print result
-x, y = counting_posterior(10, 5.2, 0.0, 30.0)
+x, y = counting_posterior(0, 0, 0.0, 10.0)
 plot_xy(x, y, 'counting_posterior.pdf') 
 l = get95up(x, y)
-print "counting experiment b=5.2; nobs=6"
+print "counting experiment b=0; nobs=0"
 print "Bayesian limit for s: %.3g" % l
+######## print results for a list instead
+npoints = 12
+print "counting experiment nobs=100" 
+print "B S@95CL" 
+for i in range(npoints):
+    b = 0 + 1 * i
+    x, y = counting_posterior(10, b, 0.0, 30.0)
+    #plot_xy(x, y, 'counting_posterior.pdf') 
+    l = get95up(x, y)
+    print " %.2g & %.3g & \\ " % ( b , l )
+#    print "Bayesian limit for s: %.3g" % l
+# return the number of elements in the list l which are >= x
+# def count_ge(l, x):
+#    n=0
+#    for x0 in l:
+#        if x0 >= x: n+=1
+#    return n
+# equivalent implementation: return sum([1 for x0 in l if x0 >= x])
 ###################################################################
+################## Towards to insert a model and get sensibility
+model = test_model.simple_counting(s = 10.0, n_obs = 12, b = 2.0)
+result = mle(model, input = 'data', n = 1)
+print result
+
+
+###################################################################
+
+# this is only the poisson with observed = mu0
+# how to I take the value of the poisson in mue ?
+
+
 #### Frequentist (exercice 2)
 ###################################################################
 ################## Cutting the Poisson
@@ -91,10 +92,10 @@ print "Bayesian limit for s: %.3g" % l
 # to observe n>=nmin for a Poisson
 # with mean mu is >= pmin.
 #def find_nmin_poisson(pmin, mu):
-    # note: this is a very inefficient implementation, but at least it should
-    # be very transparent how it works (scipy.stats.poisson.ppf provides a more efficient
-    # implementation).
-    # it is discrete!!!!
+# note: this is a very inefficient implementation, but at least it should
+# be very transparent how it works (scipy.stats.poisson.ppf provides a more efficient
+# implementation).
+# it is discrete!!!!
 #    n = 1
 #    while poisson_p_ge(n, mu) > pmin: n+= 1
 #    n -= 1
@@ -108,8 +109,8 @@ print "Bayesian limit for s: %.3g" % l
 #        # for given s0, the poisson mean is mu = b+s0, and we want
 #        # to choose nmin such that the probability for n>=nmin is the confidence level cl:
 #        nmin = find_nmin_poisson(cl, s0 + b)
-            #        if i == 6:
-            #print "nmin for s0=%.2f: %.3g" % (s0, nmin)
+#        if i == 6:
+#print "nmin for s0=%.2f: %.3g" % (s0, nmin)
 #        svals.append(s0)
 #        nmins.append(nmin)
 #    plot_xy(svals, nmins, 'neyman_belt.pdf', ymin = 0, xlabel = 's', ylabel = 'n')
@@ -121,7 +122,7 @@ print "Bayesian limit for s: %.3g" % l
 ################# exact value
 # def get_pvalue(s0, b, nobs):
 #    # here, the p-value is the probability to observe <= n events
-    # in a Poisson distribution with mean s0 + b:
+# in a Poisson distribution with mean s0 + b:
 #    return poisson_p_le(nobs, s0+b)
 # p = get_pvalue(6, 5.2, 6)
 # print "p for s0=6: %.2f" % (p)
@@ -138,32 +139,19 @@ print "Bayesian limit for s: %.3g" % l
 #    plot_xy(svals, pvals, 'p-vs-s.pdf')
 # scan_s0_pvalue(5.2, 6, 5.0, 10.0, 100)
 ###################################################################
-################## Towards to insert a model and get sensibility
-
-
-###################################################################
-
-# this is only the poisson with observed = mu0
-# how to I take the value of the poisson in mue ?
 
 
 
-# return the number of elements in the list l which are >= x
-# def count_ge(l, x):
-#    n=0
-#    for x0 in l:
-#        if x0 >= x: n+=1
-#    return n
-# equivalent implementation: return sum([1 for x0 in l if x0 >= x])
 
 
-def get_pvalue(b, nobs, ntoy = 1000):
-    # generate an ensemble of values of n for background only:
-    bonly_ns = generate_poisson(b, ntoy)
-    # count the number of toys for which n >= nobs:
-    ntoy_ge_nobs = count_ge(bonly_ns, nobs)
-    # the estimated p-value is the fraction of toys with n >= nobs:
-    return ntoy_ge_nobs * 1.0 / ntoy
+
+# def get_pvalue(b, nobs, ntoy = 1000):
+# generate an ensemble of values of n for background only:
+#    bonly_ns = generate_poisson(b, ntoy)
+# count the number of toys for which n >= nobs:
+#    ntoy_ge_nobs = count_ge(bonly_ns, nobs)
+# the estimated p-value is the fraction of toys with n >= nobs:
+#    return ntoy_ge_nobs * 1.0 / ntoy
 
 # III. get the p-value for b=5.2 and nobs = 8:
 #p = get_pvalue(5.2, 8)
@@ -188,21 +176,21 @@ def get_pvalue(b, nobs, ntoy = 1000):
 
 
 # 1.d.
-def ex1d():
-    # In theta, the statistical model is an instance of the class "Model",
-    # which contains all information for other routines -- including the observed data.
-    # This is the shape model introduced in the lecture:
-    model = build_shape_model(signal_mass = 500.)
-    # get the test statistic values for background-only:
-    ntoy = 5000
-    t_bkg = get_bkg_t(model, ntoy)
-    tobs = get_data_t(model)
-    # note: you can use plot_histogram as in 1.b. to visualize the test statistic distribution
-    # count the number of toys for which t >= tobs:
-    n = count_ge(t_bkg, tobs)
-    p = n * 1.0 / ntoy
-    Z = p_to_Z(p)
-    print "p = %.3g; Z = %.3g" % (p, Z)
+#def ex1d():
+# In theta, the statistical model is an instance of the class "Model",
+# which contains all information for other routines -- including the observed data.
+# This is the shape model introduced in the lecture:
+#    model = build_shape_model(signal_mass = 500.)
+# get the test statistic values for background-only:
+#    ntoy = 5000
+#    t_bkg = get_bkg_t(model, ntoy)
+#    tobs = get_data_t(model)
+# note: you can use plot_histogram as in 1.b. to visualize the test statistic distribution
+# count the number of toys for which t >= tobs:
+#    n = count_ge(t_bkg, tobs)
+#    p = n * 1.0 / ntoy
+#    Z = p_to_Z(p)
+# print "p = %.3g; Z = %.3g" % (p, Z)
 
 
 #ex1d()
