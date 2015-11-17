@@ -15,8 +15,8 @@ model = build_model_from_rootfile(["CMS_VV_lnuJ/CMS_BulkWW_ELEHP_1fb_Signal.root
                                    "ATLAS_VV_JJ/ATLAS_WW_JJ_1fb_SignalRS_noWWname.root",
                                    "ATLAS_VV_JJ/ATLAS_WW_JJ_1fb_Signal_oneSys.root",
                                    #
-                                   #"CMS_VV_JJ/CMS_VV_jj_data.root",
-                                   #"CMS_VV_JJ/CMS_VV_jj_BulkWW_1fb.root"
+                                   "CMS_VV_JJ/CMS_VV_jj_data.root",
+                                   "CMS_VV_JJ/CMS_VV_jj_BulkWW_1fb.root"
                                    ])
 # 
 # print model
@@ -75,14 +75,12 @@ for j in range(0,16,1):
     model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.1,procname=procname,obsname='ATLAS_WVlnJ_MR')
 
     if j>4 :
-       model.scale_predictions(fudgeWWJJ[j],procname=procname,obsname='ATLAS_VV_JJ') 
+       model.scale_predictions(fudgeWWJJ[j]*1.1,procname=procname,obsname='ATLAS_VV_JJ') 
        model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.226,procname=procname,obsname='ATLAS_VV_JJ')
        model.add_lognormal_uncertainty("lumi_atlas",0.028,procname=procname,obsname='ATLAS_VV_JJ')
        # CMS syst
-#model.add_lognormal_uncertainty("normalisation_VVJJ",0.13,procname=procname,obsname='CMS_JJ_HP')
-#model.add_lognormal_uncertainty("lumicms",0.026,procname=procname,obsname='CMS_JJ_HP')
-#model.add_lognormal_uncertainty("normalisation_VVJJ",0.13,procname=procname,obsname='CMS_JJ_LP')
-#model.add_lognormal_uncertainty("lumicms",0.026,procname=procname,obsname='CMS_JJ_LP')
+       model.add_lognormal_uncertainty("normalisation_VVJJ",0.13,procname=procname,obsname='CMS_JJ_HP')
+       model.add_lognormal_uncertainty("lumicms",0.026,procname=procname,obsname='CMS_JJ_HP')
 
 
 #    print str(mass[j])

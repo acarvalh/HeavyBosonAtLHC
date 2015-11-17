@@ -15,112 +15,108 @@ model = build_model_from_rootfile(["CMS_VV_lnuJ/CMS_BulkWW_ELEHP_1fb_Signal.root
                                    "ATLAS_VV_JJ/ATLAS_WW_JJ_1fb_SignalRS_noWWname.root",
                                    "ATLAS_VV_JJ/ATLAS_WW_JJ_1fb_Signal_oneSys.root",
                                    #
-                                   #"CMS_VV_JJ/CMS_VV_jj_data.root",
-                                   #"CMS_VV_JJ/CMS_VV_jj_BulkWW_1fb.root"
+                                   "CMS_VV_JJ/CMS_VV_jj_data.root",
+                                   "CMS_VV_JJ/CMS_VV_jj_BulkWW_1fb.root"
                                    ])
 # 
 # print model
 
+fudge = 0
+
 model.set_signal_processes("BulkWW*")
-rangenorm = 5
 model.fill_histogram_zerobins(epsilon=0.001)
 mass=[1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500]
 
-fudgeWWl=[1.41025, 1.35686, 1.31496, 1.25667, 1.22709, 1.20154, 1.18648, 1.19411, 1.15167, 1.18859, 1.15312, 1.13278, 1.1486, 1.14364, 1.14226, 1.11291] # CMS
-fudgeWZlvJ = [0.795712, 0.929701, 0.936624, 0.980215, 1.03092, 1.04214, 1.07966, 1.04453, 1.0487, 1.00702, 0.959159, 0.880764, 0.787317, 0.729852, 0.674062, 0.645124] #ATLAS
+fudgeWWlvCMS=[1.41025, 1.35686, 1.31496, 1.25667, 1.22709, 1.20154, 1.18648, 1.19411, 1.15167, 1.18859, 1.15312, 1.13278, 1.1486, 1.14364, 1.14226, 1.11291] 
+fudgeWZlvJATLAS = [0.795712, 0.929701, 0.936624, 0.980215, 1.03092, 1.04214, 1.07966, 1.04453, 1.0487, 1.00702, 0.959159, 0.880764, 0.787317, 0.729852, 0.674062, 0.645124] 
+fudgeWWlvJATLAS = [1.34167, 1.21314, 1.08996, 1.08625, 1.11429, 1.14418, 1.1409,  1.06639, 1.08099, 1.06824, 1.01071, 0.963582, 0.904669, 0.831587, 0.787872, 0.746516]
 
-#fudgeWWl=[1.0, 1.0,1.0, 1.0, 1.0,1.0, 1.0,1.0, 1.0, 1.0,1.0, 1.0,1.0, 1.0, 1.0,1.0]
+fudgeZZllCMS=[1.09879, 1.05341, 1.00664, 1.03848, 1.11259, 1.02073, 1.11013, 1.10722, 1.15051, 1.0962, 1.13582, 1.15223, 1.20053, 1.16918, 1.2755, 1.31541]
+fudgeZZllJATLAS=[1.2004, 1.1734, 1.03546, 1.04473, 1.06224, 0.939548, 1.0411, 1.02485, 1.00821, 1.01614, 0.915197]
+fudgeWZllJATLAS = [1.04091, 0.959243, 0.86275, 0.869074, 0.844375, 0.8973, 0.852316, 0.817111, 0.843688, 0.777118, 0.768438]
 
-fudgeWW=[1.0, 1.0,1.0, 1.0, 1.0, 0.534724, 0.580952, 0.63504, 0.654515, 0.650031, 0.626703, 0.607802, 0.598088, 0.559351, 0.541227, 0.528914]
+fudgeZZJJATLAS=[1,1,1,1,1,0.55619, 0.565121, 0.561593, 0.569191, 0.564982, 0.528031, 0.488941,0.488903, 0.40283, 0.401571, 0.387373]
+fudgeWWJJATLAS=[1,1,1,1,1,0.513282, 0.553725, 0.609789, 0.637297, 0.642589, 0.626628, 0.610983, 0.601232, 0.560182, 0.538367, 0.557967]
+fudgeWZJJATLAS=[1,1,1,1,1,0.562062, 0.607006, 0.664361, 0.683049, 0.672502, 0.643021, 0.677244,0.652601, 0.611615, 0.575068, 0.558068]
 
-lumiSystName = "lumiSystCMS"
-lumiSystValue = 0.026
+lumiSystNameCMS = "lumiSystCMS"
+lumiSystValueCMS = 0.026
+lumiSystNameATLAS = "lumiSystATLAS"
+lumiSystValueATLAS = 0.028
+
+narrow=1.1
 
 filename='results/CMS_ATLAS_VV_lvJ_JJ_BulkWW_ourfit'
-expfile = filename+'_expected.txt'
-obsfile = filename+'_observed.txt'
-zfile = filename+'_zlevel.txt'
-z17 = filename+'_Lik1700.txt'
-z18 = filename+'_Lik1800.txt'
-z19 = filename+'_Lik1900.txt'
-z20 = filename+'_Lik2000.txt'
-z21 = filename+'_Lik2100.txt'
-z22 = filename+'_Lik2200.txt'
+fudgeLabel = '_Fudge'
+if fudge :
+    expfile = filename+fudgeLabel+'_expected.txt'
+    obsfile = filename+fudgeLabel+'_observed.txt'
+    zfile = filename+fudgeLabel+'_zlevel.txt'
+    z17 = filename+fudgeLabel+'_Lik1700.txt'
+    z18 = filename+fudgeLabel+'_Lik1800.txt'
+    z19 = filename+fudgeLabel+'_Lik1900.txt'
+    z20 = filename+fudgeLabel+'_Lik2000.txt'
+    z21 = filename+fudgeLabel+'_Lik2100.txt'
+    z22 = filename+fudgeLabel+'_Lik2200.txt'
+else :
+    expfile = filename+'_expected.txt'
+    obsfile = filename+'_observed.txt'
+    zfile = filename+'_zlevel.txt'
+    z17 = filename+'_Lik1700.txt'
+    z18 = filename+'_Lik1800.txt'
+    z19 = filename+'_Lik1900.txt'
+    z20 = filename+'_Lik2000.txt'
+    z21 = filename+'_Lik2100.txt'
+    z22 = filename+'_Lik2200.txt'
 
 for j in range(0,16,1): 
     procname = "BulkWW"+str(mass[j])  
 
-#model.scale_predictions(fudgeWWl[j],procname=procname,obsname='CMS_VV_lnuj_MUHP')#The fudge factor    
-#    model.scale_predictions(fudgeWWl[j],procname=procname,obsname='CMS_VV_lnuj_MULP')#The fudge factor    
-#    model.scale_predictions(fudgeWWl[j],procname=procname,obsname='CMS_VV_lnuj_ELEHP')#The fudge factor    
-#    model.scale_predictions(fudgeWWl[j],procname=procname,obsname='CMS_VV_lnuj_ELELP')#The fudge factor    
-    
+    #####################################################################################################
+    # Fudge
+    if fudge :
+       # CMS lvJ
+        model.scale_predictions(fudgeWWlvCMS[j],procname=procname,obsname='CMS_VV_lnuj_MUHP')
+        model.scale_predictions(fudgeWWlvCMS[j],procname=procname,obsname='CMS_VV_lnuj_ELEHP')
+        model.scale_predictions(fudgeWWlvCMS[j],procname=procname,obsname='CMS_VV_lnuj_MULP')
+        model.scale_predictions(fudgeWWlvCMS[j],procname=procname,obsname='CMS_VV_lnuj_ELELP')
+        # ATLAS lvJ
+        model.scale_predictions(fudgeWWlvJATLAS[j],procname=procname,obsname='ATLAS_WVlnJ_MR')#The fudge factor
+        if j>4 :
+           model.scale_predictions(fudgeWWJJATLAS[j]*narrow,procname=procname,obsname='ATLAS_VV_JJ') 
+    elif j>4 :
+        model.scale_predictions(narrow,procname=procname,obsname='ATLAS_VV_JJ') 
+    ######################################################################################################  
+    # SEMI
     # ATLAS syst                        
     #    model.scale_predictions(fudgeWZlvJ[j],procname=procname,obsname='ATLAS_WVlnJ_MR')#The fudge factor   
     model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.1,procname=procname,obsname='ATLAS_WVlnJ_MR')
-    model.add_lognormal_uncertainty("lumi_atlas",0.028,procname=procname,obsname='ATLAS_WVlnJ_MR')
-    
-    #    # CMS syst
+    model.add_lognormal_uncertainty(lumiSystNameATLAS,lumiSystValueATLAS,procname=procname,obsname='ATLAS_WVlnJ_MR')
+    # CMS syst
     # shape summed quadratically 
     model.add_lognormal_uncertainty("normalisation_CMS_VV_lnuj_MUHP",0.03,procname=procname,obsname='CMS_VV_lnuj_MUHP')
     model.add_lognormal_uncertainty("normalisation_CMS_VV_lnuj_ELEHP",0.037,procname=procname,obsname='CMS_VV_lnuj_ELEHP')
     model.add_lognormal_uncertainty("normalisation_CMS_WVnnuJ_LP",0.03,procname=procname,obsname='CMS_VV_lnuj_MULP')
     model.add_lognormal_uncertainty("normalisation_CMS_VV_lnuj_ELELP",0.037,procname=procname,obsname='CMS_VV_lnuj_ELELP')
+    # migration
     model.add_lognormal_uncertainty("catMigration_CMS_VV_lnuj_MUHP",0.09,procname=procname,obsname='CMS_VV_lnuj_MUHP')
     model.add_lognormal_uncertainty("catMigration_CMS_VV_lnuj_ELEHP",0.09,procname=procname,obsname='CMS_VV_lnuj_ELEHP')
-    # anti correlated
     model.add_lognormal_uncertainty("catMigration_CMS_WVnnuJ_LP",-0.24,procname=procname,obsname='CMS_VV_lnuj_MULP')
     model.add_lognormal_uncertainty("catMigration_CMS_VV_lnuj_ELELP",-0.24,procname=procname,obsname='CMS_VV_lnuj_ELELP')
     # lumi
-    model.add_lognormal_uncertainty(lumiSystName,lumiSystValue,procname=procname,obsname='CMS_VV_lnuj_MUHP')
-    model.add_lognormal_uncertainty(lumiSystName,lumiSystValue,procname=procname,obsname='CMS_VV_lnuj_ELEHP')
-    model.add_lognormal_uncertainty(lumiSystName,lumiSystValue,procname=procname,obsname='CMS_VV_lnuj_MULP')
-    model.add_lognormal_uncertainty(lumiSystName,lumiSystValue,procname=procname,obsname='CMS_VV_lnuj_ELELP')  
-                                                              
-    model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.1,procname=procname,obsname='ATLAS_WVlnJ_MR')
-    model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.1,procname=procname,obsname='ATLAS_WVlnJ_MR')
-
+    model.add_lognormal_uncertainty(lumiSystNameATLAS,lumiSystValueATLAS,procname=procname,obsname='CMS_VV_lnuj_MUHP')
+    model.add_lognormal_uncertainty(lumiSystNameATLAS,lumiSystValueATLAS,procname=procname,obsname='CMS_VV_lnuj_ELEHP')
+    model.add_lognormal_uncertainty(lumiSystNameATLAS,lumiSystValueATLAS,procname=procname,obsname='CMS_VV_lnuj_MULP')
+    model.add_lognormal_uncertainty(lumiSystNameATLAS,lumiSystValueATLAS,procname=procname,obsname='CMS_VV_lnuj_ELELP')  
+    # HAD 
     if j>4 :
-        #model.scale_predictions(fudgeZZJJ[j],procname=procname,obsname='ATLAS_VV_JJ') 
        model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.226,procname=procname,obsname='ATLAS_VV_JJ')
-       model.add_lognormal_uncertainty("lumi_atlas",0.028,procname=procname,obsname='ATLAS_VV_JJ')
+       model.add_lognormal_uncertainty(lumiSystNameATLAS,lumiSystValueATLAS,procname=procname,obsname='ATLAS_VV_JJ')
        # CMS syst
-#model.add_lognormal_uncertainty("normalisation_VVJJ",0.13,procname=procname,obsname='CMS_JJ_HP')
-#model.add_lognormal_uncertainty("lumicms",0.026,procname=procname,obsname='CMS_JJ_HP')
-#model.add_lognormal_uncertainty("normalisation_VVJJ",0.13,procname=procname,obsname='CMS_JJ_LP')
-#model.add_lognormal_uncertainty("lumicms",0.026,procname=procname,obsname='CMS_JJ_LP')
-
-
-#    print str(mass[j])
-#    procname='VVBulk'+str(mass[j])
-#    if (j==0):
-#        group = {procname : [procnameC]}
-#    elif (j<5):
-#        group[procname] = [procnameC]
-#    elif (j>5):
-#        group[procname] = [procnameA, procnameC]
-#    else:
-#       group[procname] = [procnameA, procnameC]
-#
-#print group
-
-#model.set_signal_process_groups( group )
-
-#####################################
-# with fudge 3.5
-# no fudge: 2.5
-rangenorm = 5.0
-for p in model.distribution.get_parameters():
-    d = model.distribution.get_distribution(p)
-    if d['typ'] == 'gauss' and d['mean'] == 0.0 and d['width'] == 1.0 and ( p=='jesatlas' or p == 'mesatlas'):
-        model.distribution.set_distribution_parameters(p, range = [-rangenorm, rangenorm])
-    elif d['typ'] == 'gauss' and d['mean'] == 0.0 and d['width'] == 1.0 and p !='jesatlas' and p != 'mesatlas':
-        model.distribution.set_distribution_parameters(p, range = [-rangenorm, rangenorm])
-    
-    d = model.distribution.get_distribution(p)
-    print p, d
-#####################################
-
+       model.add_lognormal_uncertainty("normalisation_VVJJ",0.13,procname=procname,obsname='CMS_JJ_HP')
+       model.add_lognormal_uncertainty(lumiSystNameCMS,lumiSystValueCMS,procname=procname,obsname='CMS_JJ_HP')
+       model.add_lognormal_uncertainty("normalisation_VVJJ",0.13,procname=procname,obsname='CMS_JJ_LP')
+       model.add_lognormal_uncertainty(lumiSystNameCMS,lumiSystValueCMS,procname=procname,obsname='CMS_JJ_LP')
 
 zlevel = zvalue_approx(model, "data", 1)
 expected, observed = asymptotic_cls_limits(model)
@@ -218,5 +214,7 @@ with open(z22, 'w') as fff:
         #print str(mass) , " DLik ", nllLik
         fff.write( str(nllLik) )
 fff.close()
+
+print zfile
 #report.write_html('htmlout')
 # ../theta/utils2/theta-auto.py analysis_CMS_ATLAS_BulkWW_lvJ_JJ_ourfit.py

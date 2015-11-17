@@ -34,8 +34,8 @@ model = build_model_from_rootfile(["CMS_VV_lnuJ/CMS_WZ_ELEHP_1fb_NarrowSignal.ro
                                    "ATLAS_VV_JJ/ATLAS_WZ_JJ_1fb_SignalWPrime_noJER_noWZname.root",
                                    "ATLAS_VV_JJ/ATLAS_WZ_JJ_1fb_Signal_oneSys.root",
                                    #
-                                   #"CMS_VV_JJ/CMS_VV_jj_data_propernaming.root",
-                                   #"CMS_VV_JJ/CMS_VV_jj_WZ_1fb.root" 
+                                   "CMS_VV_JJ/CMS_VV_jj_data_propernaming.root",
+                                   "CMS_VV_JJ/CMS_VV_jj_WZ_1fb.root" 
                                    ])
 # 
 # print model

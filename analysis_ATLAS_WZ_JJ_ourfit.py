@@ -1,41 +1,67 @@
 model = build_model_from_rootfile([
                                    #"ATLAS_VV_JJ/ATLAS_WZ_correct_toSigComp.root",
-                                   "ATLAS_VV_JJ/ATLAS_WZ_correct_toSigComp_rescaled.root",
+                                   #"ATLAS_VV_JJ/ATLAS_WZ_correct_toSigComp_rescaled.root",
                                    #"ATLAS_VV_JJ/ATLAS_WZ_correct_toSigComp_rescaled_sideband.root",
+                                   "ATLAS_VV_JJ/ATLAS_WZJJ__DATA_noWZname_publicBackground.root",
                                    "ATLAS_VV_JJ/ATLAS_WZ_JJ_1fb_SignalWPrime_noWZname.root",
                                    "ATLAS_VV_JJ/ATLAS_WZ_JJ_1fb_Signal_oneSys.root"])
-# 
-# print model
-# 
-filename='results/ATLAS_VV_JJ_WZ_rescaled'
-expfile = filename+'_expected.txt'
-obsfile = filename+'_observed.txt'
-zfile = filename+'_zlevel.txt'
-z17 = filename+'_Lik1700.txt'
-z18 = filename+'_Lik1800.txt'
-z19 = filename+'_Lik1900.txt'
-z20 = filename+'_Lik2000.txt'
-z21 = filename+'_Lik2100.txt'
-z22 = filename+'_Lik2200.txt'
+
+fudge = 0
+alternativeBKG = 1
+#alterLabel = '_rescaled'
+#alterLabel = '_rescaled_sideband'
+alterLabel = '_public'
+
+lumiSystNameATLAS = "lumiSystATLAS"
+lumiSystValueATLAS = 0.028
+
+filename='results/ATLAS_VV_JJ_WZ_ourfit'
+
+fudgeLabel = '_Fudge'
+if fudge :
+    expfile = filename+fudgeLabel+'_expected.txt'
+    obsfile = filename+fudgeLabel+'_observed.txt'
+    zfile = filename+fudgeLabel+'_zlevel.txt'
+    z17 = filename+fudgeLabel+'_Lik1700.txt'
+    z18 = filename+fudgeLabel+'_Lik1800.txt'
+    z19 = filename+fudgeLabel+'_Lik1900.txt'
+    z20 = filename+fudgeLabel+'_Lik2000.txt'
+    z21 = filename+fudgeLabel+'_Lik2100.txt'
+    z22 = filename+fudgeLabel+'_Lik2200.txt'
+elif alternativeBKG :
+    expfile = filename+alterLabel+'_expected.txt'
+    obsfile = filename+alterLabel+'_observed.txt'
+    zfile = filename+alterLabel+'_zlevel.txt'
+    z17 = filename+alterLabel+'_Lik1700.txt'
+    z18 = filename+alterLabel+'_Lik1800.txt'
+    z19 = filename+alterLabel+'_Lik1900.txt'
+    z20 = filename+alterLabel+'_Lik2000.txt'
+    z21 = filename+alterLabel+'_Lik2100.txt'
+    z22 = filename+alterLabel+'_Lik2200.txt'
+else :
+    expfile = filename+'_expected.txt'
+    obsfile = filename+'_observed.txt'
+    zfile = filename+'_zlevel.txt'
+    z17 = filename+'_Lik1700.txt'
+    z18 = filename+'_Lik1800.txt'
+    z19 = filename+'_Lik1900.txt'
+    z20 = filename+'_Lik2000.txt'
+    z21 = filename+'_Lik2100.txt'
+    z22 = filename+'_Lik2200.txt'
 
 model.set_signal_processes("WZ*")
-rangenorm = 5
 model.fill_histogram_zerobins(epsilon=0.001)
 mass=[1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500]
+fudgeWZJJATLAS=[0.562062, 0.607006, 0.664361, 0.683049, 0.672502, 0.643021, 0.677244,0.652601, 0.611615, 0.575068, 0.558068]
 
+#####################################################################
 for j in range(0,11,1): 
     procname = "WZ"+str(mass[j])
-    # model.scale_predictions(0.5,procname=procname,obsname='ATLAS_VV_JJ')#The fudge factor                                                                 
+    if fudge :
+        model.scale_predictions(fudgeWZJJATLAS[j],procname=procname,obsname='ATLAS_VV_JJ') 
     model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.226,procname=procname,obsname='ATLAS_VV_JJ')
-    model.add_lognormal_uncertainty("lumi_atlas",0.028,procname=procname,obsname='ATLAS_VV_JJ')
-
-#for p in model.distribution.get_parameters():
-#    d = model.distribution.get_distribution(p)
-#    if d['typ'] == 'gauss' and d['mean'] == 0.0 and d['width'] == 1.0 and p !='jesatlas' and p != 'mesatlas':
-#        model.distribution.set_distribution_parameters(p, range = [-1*rangenorm, rangenorm])
-#    
-#    d = model.distribution.get_distribution(p)
-#    print p, d
+    model.add_lognormal_uncertainty(lumiSystNameATLAS,lumiSystValueATLAS,procname=procname,obsname='ATLAS_VV_JJ')
+######################################################################
 
 zlevel = zvalue_approx(model, "data", 1)
 expected, observed = asymptotic_cls_limits(model)

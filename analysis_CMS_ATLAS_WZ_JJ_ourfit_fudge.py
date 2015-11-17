@@ -30,7 +30,7 @@ z22 = filename+'_Lik2200.txt'
 model.fill_histogram_zerobins(epsilon=0.001)
 for j in range(0,11,1): 
     procname = "WZ"+str(mass[j])
-    model.scale_predictions(fudgeWZ[j],procname=procname,obsname='ATLAS_VV_JJ')#The fudge factor          
+    model.scale_predictions(fudgeWZ[j]*1.1,procname=procname,obsname='ATLAS_VV_JJ')#The fudge factor          
     #model.scale_predictions(1.1,procname=procname,obsname='ATLAS_VV_JJ')#The fudge factor                    
     model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.226,procname=procname,obsname='ATLAS_VV_JJ')
     # model.add_lognormal_uncertainty("lumi_atlas",0.028,procname=procname,obsname='ATLAS_VV_JJ_WZ')

@@ -2,14 +2,13 @@ model = build_model_from_rootfile(["CMS_VV_llJ/CMS_ZVeeJ_HP_dijetLike_uncorrSys.
                                    "CMS_VV_llJ/CMS_ZVeeJ_LP_dijetLike_uncorrSys.root",
                                    "CMS_VV_llJ/CMS_ZVmmJ_HP_dijetLike_uncorrSys.root",
                                    "CMS_VV_llJ/CMS_ZVmmJ_LP_dijetLike_uncorrSys.root",
-                                   "CMS_VV_llJ/signalsHP_ELE_naming.root",
-                                   "CMS_VV_llJ/signalsHP_MU_naming.root",
-                                   "CMS_VV_llJ/signalsLP_ELE_naming.root",
-                                   "CMS_VV_llJ/signalsLP_MU_naming.root",
+                                   "CMS_VV_llJ/CMS_WZ_ELEHP_1fb_WpToZlepWhad_NarrowSignal.root",
+                                   "CMS_VV_llJ/CMS_WZ_ELELP_1fb_WpToZlepWhad_NarrowSignal.root",
+                                   "CMS_VV_llJ/CMS_WZ_MUHP_1fb_WpToZlepWhad_NarrowSignal.root",
+                                   "CMS_VV_llJ/CMS_WZ_MULP_1fb_WpToZlepWhad_NarrowSignal.root",
                                    #
-                                   "ATLAS_VV_llJ/ATLAS_ZVllJ_thetaNaming.root",
-                                   "ATLAS_VV_llJ/ATLAS_ZZ_MR_1fb_Signal.root",
-                                   "ATLAS_VV_llJ/ATLAS_ZZ_HR_1fb_Signal.root"
+                                   "ATLAS_VV_llJ/ATLAS_ZVllJ_newNaming.root",
+                                   "ATLAS_VV_llJ/ATLAS_WZ_MR_1fb_Signal.root"
                                    ])
 # 
 # print model
@@ -27,7 +26,7 @@ lumiSystValueCMS = 0.026
 lumiSystNameATLAS = "lumiSystATLAS"
 lumiSystValueATLAS = 0.028
 
-filename='results/CMS_ATLAS_VV_llJ_BulkZZ_ourfit'
+filename='results/CMS_ATLAS_VV_llJ_WZ_ourfit'
 fudgeLabel = '_Fudge'
 if fudge :
     expfile = filename+fudgeLabel+'_expected.txt'
@@ -50,14 +49,14 @@ else :
     z21 = filename+'_Lik2100.txt'
     z22 = filename+'_Lik2200.txt'
 
-model.set_signal_processes("BulkZZ*")
+model.set_signal_processes("WZ*")
 #rangenorm = 2.5
 model.fill_histogram_zerobins(epsilon=0.001)
 #mass=[1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500]
 
 for j in range(0,16,1): 
     #    # model.scale_predictions(0.5,procname=procname,obsname='ATLAS_VV_JJ_ZZ')#The fudge factor    
-    procname = "BulkZZ"+str(mass[j])
+    procname = "WZ"+str(mass[j])
     #####################################################################################################
     # Fudge
     if fudge :
@@ -70,22 +69,21 @@ for j in range(0,16,1):
         if j<11 :
              model.scale_predictions(fudgeZZllJATLAS[j],procname=procname,obsname='ATLAS_ZVllJ_MR')#The fudge factor 
     ###################################################################################################### 
-    #    # CMS syst
-    # shape summed quadratically 
-    model.add_lognormal_uncertainty("normalisation_CMS_VV_lnuj_MUHP",0.03,procname=procname,obsname='CMS_ZVmmJ_HP')
-    model.add_lognormal_uncertainty("normalisation_CMS_VV_lnuj_ELEHP",0.037,procname=procname,obsname='CMS_ZVeeJ_HP')
-    model.add_lognormal_uncertainty("normalisation_CMS_WVnnuJ_LP",0.03,procname=procname,obsname='CMS_ZVmmJ_LP')
-    model.add_lognormal_uncertainty("normalisation_CMS_VV_lnuj_ELELP",0.037,procname=procname,obsname='CMS_ZVeeJ_LP')
-    # migration
-    model.add_lognormal_uncertainty("catMigration_CMS_VV_lnuj_MUHP",0.09,procname=procname,obsname='CMS_ZVmmJ_HP')
-    model.add_lognormal_uncertainty("catMigration_CMS_VV_lnuj_ELEHP",0.09,procname=procname,obsname='CMS_ZVeeJ_HP')
-    model.add_lognormal_uncertainty("catMigration_CMS_WVnnuJ_LP",-0.24,procname=procname,obsname='CMS_ZVmmJ_LP')
-    model.add_lognormal_uncertainty("catMigration_CMS_VV_lnuj_ELELP",-0.24,procname=procname,obsname='CMS_ZVeeJ_LP')
-    # lumi
+    # CMSllJ
     model.add_lognormal_uncertainty(lumiSystNameCMS,lumiSystValueCMS,procname=procname,obsname='CMS_ZVmmJ_HP')
     model.add_lognormal_uncertainty(lumiSystNameCMS,lumiSystValueCMS,procname=procname,obsname='CMS_ZVeeJ_HP')
     model.add_lognormal_uncertainty(lumiSystNameCMS,lumiSystValueCMS,procname=procname,obsname='CMS_ZVmmJ_LP')
     model.add_lognormal_uncertainty(lumiSystNameCMS,lumiSystValueCMS,procname=procname,obsname='CMS_ZVeeJ_LP')
+    ## shape summed quadratically 
+    model.add_lognormal_uncertainty("normalisation_CMS_VV_llj_MUHP",0.03,procname=procname,obsname='CMS_ZVmmJ_HP')
+    model.add_lognormal_uncertainty("normalisation_CMS_VV_llj_ELEHP",0.037,procname=procname,obsname='CMS_ZVeeJ_HP')
+    model.add_lognormal_uncertainty("normalisation_CMS_VV_llj_MULP",0.03,procname=procname,obsname='CMS_ZVmmJ_LP')
+    model.add_lognormal_uncertainty("normalisation_CMS_VV_llj_ELELP",0.037,procname=procname,obsname='CMS_ZVeeJ_LP')
+    ## migration
+    model.add_lognormal_uncertainty("catMigration_CMS_VV_llj_MUHP",0.09,procname=procname,obsname='CMS_ZVmmJ_HP')
+    model.add_lognormal_uncertainty("catMigration_CMS_VV_llj_ELEHP",0.09,procname=procname,obsname='CMS_ZVeeJ_HP')
+    model.add_lognormal_uncertainty("catMigration_CMS_WVllJ_LP",-0.24,procname=procname,obsname='CMS_ZVmmJ_LP')
+    model.add_lognormal_uncertainty("catMigration_CMS_VV_llj_ELELP",-0.24,procname=procname,obsname='CMS_ZVeeJ_LP')
     # ATLAS ZZ llJ
     if j<11 :
        model.add_lognormal_uncertainty("normalisation_VVllJ_atlas",0.1,procname=procname,obsname='ATLAS_ZVllJ_MR')
@@ -106,7 +104,7 @@ current = 0
 with open(zfile, 'w') as fff:
     while current < len(zlevel):
         masse = mass[current]
-        sig='BulkZZ'+str(masse)
+        sig='WZ'+str(masse)
         zl = zlevel[sig]['Z'][0]
         pl = Z_to_p(zl)
         bf= pl_interval[sig][0][0]
@@ -137,7 +135,7 @@ fff.close()
 with open(z17, 'w') as fff:
         masse = 1700
         print str(masse)
-        sig='BulkZZ'+str(masse)
+        sig='WZ'+str(masse)
         nllLik = nll[sig][0]
         #print str(mass) , " DLik ", nllLik
         fff.write( str(nllLik) )
@@ -146,7 +144,7 @@ fff.close()
 with open(z18, 'w') as fff:
         masse = 1800
         print str(masse)
-        sig='BulkZZ'+str(masse)
+        sig='WZ'+str(masse)
         nllLik = nll[sig][0]
         #print str(mass) , " DLik ", nllLik
         fff.write( str(nllLik) )
@@ -155,7 +153,7 @@ fff.close()
 with open(z19, 'w') as fff:
         masse = 1900
         print str(masse)
-        sig='BulkZZ'+str(masse)
+        sig='WZ'+str(masse)
         nllLik = nll[sig][0]
         #print str(mass) , " DLik ", nllLik
         fff.write( str(nllLik) )
@@ -164,7 +162,7 @@ fff.close()
 with open(z20, 'w') as fff:
         masse = 2000
         print str(masse)
-        sig='BulkZZ'+str(masse)
+        sig='WZ'+str(masse)
         nllLik = nll[sig][0]
         #print str(mass) , " DLik ", nllLik
         fff.write( str(nllLik) )
@@ -173,7 +171,7 @@ fff.close()
 with open(z21, 'w') as fff:
         masse = 2100
         print str(masse)
-        sig='BulkZZ'+str(masse)
+        sig='WZ'+str(masse)
         nllLik = nll[sig][0]
         #print str(mass) , " DLik ", nllLik
         fff.write( str(nllLik) )
@@ -182,7 +180,7 @@ fff.close()
 with open(z22, 'w') as fff:
         masse = 2200
         print str(masse)
-        sig='BulkZZ'+str(masse)
+        sig='WZ'+str(masse)
         nllLik = nll[sig][0]
         #print str(mass) , " DLik ", nllLik
         fff.write( str(nllLik) )
@@ -190,4 +188,4 @@ fff.close()
 
 print zfile
 #report.write_html('htmlout')
-# ../theta/utils2/theta-auto.py analysis_CMS_ATLAS_BulkZZ_llJ_ourfit.py
+# ../theta/utils2/theta-auto.py analysis_CMS_ATLAS_WZ_llJ_ourfit.py

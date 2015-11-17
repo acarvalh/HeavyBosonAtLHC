@@ -1,38 +1,40 @@
 model = build_model_from_rootfile(["ATLAS_VV_llJ/ATLAS_ZVllJ_newNaming.root",
-                                   "ATLAS_VV_llJ/ATLAS_ZZ_MR_1fb_Signal.root",
-                                   "ATLAS_VV_llJ/ATLAS_ZZ_HR_1fb_Signal.root"])
+                                   "ATLAS_VV_llJ/ATLAS_ZZ_MR_1fb_Signal.root"
+                                   #"ATLAS_VV_llJ/ATLAS_ZZ_HR_1fb_Signal.root"
+                                   ])
 # 
 # print model
 
 model.set_signal_processes("BulkZZ*")
-rangenorm = 5
 model.fill_histogram_zerobins(epsilon=0.001)
 mass=[1000,1100,1200,1300,1400,1500, 1600, 1700, 1800, 1900, 2000]
-fudgeZZll=[1.13325, 1.14507, 1.02254, 1.03709, 1.05769, 0.937516, 1.03966, 1.02382, 1.00747, 1.01528, 0.914607]
+fudgeZZllJATLAS=[1.2004, 1.1734, 1.03546, 1.04473, 1.06224, 0.939548, 1.0411, 1.02485, 1.00821, 1.01614, 0.915197]
 
 
-#filename='results/ATLAS_VV_llJ_BulkZZ_ourfit'
-filename='results/ATLAS_VV_llJ_BulkZZ_ourfit_Fudge'
-expfile = filename+'_expected.txt'
-obsfile = filename+'_observed.txt'
-zfile = filename+'_zlevel.txt'
+lumiSystNameATLAS = "lumiSystATLAS"
+lumiSystValueATLAS = 0.028
+
+fudge=1
+filename='results/ATLAS_VV_llJ_BulkZZ_ourfit' 
+fudgeLabel = '_Fudge'
+if fudge :
+    expfile = filename+fudgeLabel+'_expected.txt'
+    obsfile = filename+fudgeLabel+'_observed.txt'
+    zfile = filename+fudgeLabel+'_zlevel.txt'
+else : 
+    expfile = filename+'_expected.txt'
+    obsfile = filename+'_observed.txt'
+    zfile = filename+'_zlevel.txt'
 
 for j in range(0,11,1): 
     procname = "BulkZZ"+str(mass[j])
-    model.scale_predictions(fudgeZZll[j],procname=procname,obsname='ATLAS_ZVllJ_MR')#The fudge factor         
-    model.scale_predictions(fudgeZZll[j],procname=procname,obsname='ATLAS_ZVllJ_HR')#The fudge factor         
+    if fudge :
+       model.scale_predictions(fudgeZZllJATLAS[j],procname=procname,obsname='ATLAS_ZVllJ_MR')#The fudge factor         
+       #model.scale_predictions(fudgeZZll[j],procname=procname,obsname='ATLAS_ZVllJ_HR')#The fudge factor         
     model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.1,procname=procname,obsname='ATLAS_ZVllJ_MR')
-    model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.1,procname=procname,obsname='ATLAS_ZVllJ_HR')
-    model.add_lognormal_uncertainty("lumi_atlas",0.028,procname=procname,obsname='ATLAS_ZVllJ_MR')
-    model.add_lognormal_uncertainty("lumi_atlas",0.028,procname=procname,obsname='ATLAS_ZVllJ_MR')
-
-#for p in model.distribution.get_parameters():
-#    d = model.distribution.get_distribution(p)
-#    if d['typ'] == 'gauss' and d['mean'] == 0.0 and d['width'] == 1.0 and p !='jesatlas' and p != 'mesatlas':
-#        model.distribution.set_distribution_parameters(p, range = [-1*rangenorm, rangenorm])
-#    
-#    d = model.distribution.get_distribution(p)
-#    print p, d
+    #model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.1,procname=procname,obsname='ATLAS_ZVllJ_HR')
+    model.add_lognormal_uncertainty(lumiSystNameATLAS,lumiSystValueATLAS,procname=procname,obsname='ATLAS_ZVllJ_MR')
+    #model.add_lognormal_uncertainty(lumiSystNameATLAS,lumiSystValueATLAS,procname=procname,obsname='ATLAS_ZVllJ_MR')
 
 zlevel = zvalue_approx(model, "data", 1)
 expected, observed = asymptotic_cls_limits(model)
@@ -76,5 +78,6 @@ with open(zfile, 'w') as fff:
         current += 1
 fff.close()
 
-report.write_html('htmlout')
+print zfile
+#report.write_html('htmlout')
 # ../theta/utils2/theta-auto.py analysis_ATLAS_BulkZZ_llJ_ourfit.py

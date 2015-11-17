@@ -44,7 +44,7 @@ for p in model.distribution.get_parameters():
 expected, observed = asymptotic_cls_limits(model)
 clevel = pl_interval(model, "data", 1)
 zlevel = zvalue_approx(model, "data", 1)
-
+pl_interval = pl_interval(model, "data", 1)
 model_summary(model, True)
 print expected, observed
 print zlevel
@@ -53,26 +53,39 @@ print pvalue
 expected.write_txt('results/CMS_ATLAS_VV_JJ_BulkZZ_WWSel_rescaled_Fudge_expected.txt')
 observed.write_txt('results/CMS_ATLAS_VV_JJ_BulkZZ_WWSel_rescaled_Fudge_observed.txt')
 #zlevel.write_txt('CMS_ATLAS_VV_JJ_ZZ_ourfit_noFudge_zlevel.txt')
-
+  
 
 current = 1
 with open('results/CMS_ATLAS_VV_JJ_BulkZZ_WWSel_rescaled_Fudge_zlevel.txt', 'w') as fff:
     while current < len(zlevel)+1:
-       masse = current*100+1400
-       sig='BulkZZ'+str(masse)
-       # print sig
-       zl = zlevel[sig]['Z'][0]
-       pl = Z_to_p(zl)
-       print str(masse) , " Zlevel ",zlevel[sig]['Z'][0] , " ", pl 
-       fff.write( str(masse) )
-       fff.write( '  ' ) 
-       fff.write( str(zlevel[sig]['Z'][0]) )
-       fff.write( '  ' ) 
-       fff.write( str(pl) )
-       fff.write( '\n' )
-       current += 1
+        masse = current*100+1400
+        sig='BulkZZ'+str(masse)
+        zl = zlevel[sig]['Z'][0]
+        pl = Z_to_p(zl)
+        bf= pl_interval[sig][0][0]
+        bf1u= pl_interval[sig][0.6826894921370859][0][0]
+        bf1d= pl_interval[sig][0.6826894921370859][0][1]
+        bf2u= pl_interval[sig][0.9544997361036416][0][0]
+        bf2d= pl_interval[sig][0.9544997361036416][0][1]
+        print str(masse) , " Zlevel ",zlevel[sig]['Z'][0] , " ", pl , " ", bf , " ", bf2d , " ", bf1d , " ", bf1u , " ", bf2u 
+        fff.write( str(masse) )
+        fff.write( '  ' ) 
+        fff.write( str(zlevel[sig]['Z'][0]) )
+        fff.write( '  ' ) 
+        fff.write( str(pl) )
+        fff.write( '  ' ) 
+        fff.write( str(bf) )
+        fff.write( '  ' ) 
+        fff.write( str(bf2d) )
+        fff.write( '  ' ) 
+        fff.write( str(bf1d) )
+        fff.write( '  ' ) 
+        fff.write( str(bf1u) )
+        fff.write( '  ' ) 
+        fff.write( str(bf2u) )
+        fff.write( '\n' )
+        current += 1
 fff.close()
-  
 
 report.write_html('htmlout')
 

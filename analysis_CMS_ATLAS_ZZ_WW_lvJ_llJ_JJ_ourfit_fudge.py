@@ -29,8 +29,11 @@ model = build_model_from_rootfile([# CMS lvJ WW
                                    "ATLAS_VV_JJ/ATLAS_WW_JJ_1fb_SignalRS_noWWname.root",
                                    "ATLAS_VV_JJ/ATLAS_WW_JJ_1fb_Signal_oneSys.root",
                                    "ATLAS_VV_JJ/ATLAS_ZZ_JJ_1fb_SignalRS_noZZname.root",
-                                   "ATLAS_VV_JJ/ATLAS_ZZ_JJ_1fb_Signal_oneSys.root"
-                                   # missing CMS
+                                   "ATLAS_VV_JJ/ATLAS_ZZ_JJ_1fb_Signal_oneSys.root",
+                                   # CMS JJ
+                                   "CMS_VV_JJ/CMS_VV_jj_data.root",
+                                   "CMS_VV_JJ/CMS_VV_jj_BulkWW_1fb.root",
+                                   "CMS_VV_JJ/CMS_VV_jj_BulkZZ_1fb.root"
                                    ])
 # 
 # print model
@@ -50,7 +53,7 @@ fudgeWZll=[0.959326, 0.924054, 0.843844, 0.854296, 0.834417, 0.8884, 0.844526, 0
 fudgeZZllCMS=[1.09879, 1.05341, 1.00664, 1.03848, 1.11259, 1.02073, 1.11013, 1.10722, 1.15051, 1.0962, 1.13582, 1.15223, 1.20053, 1.16918, 1.2755, 1.31541]
 fudgeWZlvJATLAS = [0.795712, 0.929701, 0.936624, 0.980215, 1.03092, 1.04214, 1.07966, 1.04453, 1.0487, 1.00702, 0.959159, 0.880764, 0.787317, 0.729852, 0.674062, 0.645124]
 
-fudgeWZJJ=[1,1,1,1,1,0.54589, 0.586895, 0.627054, 0.631853, 0.617468, 0.593851, 0.630605, 0.620526, 0.598117, 0.575702, 0.574792]
+fudgeZZJJ=[1,1,1,1,1,0.55619, 0.565121, 0.561593, 0.569191, 0.564982, 0.528031, 0.488941,0.488903, 0.40283, 0.401571, 0.387373]
 
 fudgeWWJJ=[1,1,1,1,1,0.516994, 0.557296, 0.607179, 0.630566, 0.636335, 0.622595, 0.610246, 0.605146, 0.568741, 0.551866, 0.577838]
  
@@ -130,18 +133,18 @@ for j in range(0,16,1):
         model.add_lognormal_uncertainty("lumi_atlas",0.028,procname=procnamezz,obsname='ATLAS_ZVllJ_MR')
 
     if j>4 :
-        model.scale_predictions(fudgeWZJJ[j]*rzz,procname=procnamezz,obsname='ATLAS_VV_JJ') 
+        model.scale_predictions(fudgeZZJJ[j]*rzz*1.1,procname=procnamezz,obsname='ATLAS_VV_JJ') 
         model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.226,procname=procnamezz,obsname='ATLAS_VV_JJ')
         model.add_lognormal_uncertainty("lumi_atlas",0.028,procname=procnamezz,obsname='ATLAS_VV_JJ')
         #
-        model.scale_predictions(fudgeWWJJ[j]*totWW,procname=procnameww,obsname='ATLAS_VV_JJ') 
+        model.scale_predictions(fudgeWWJJ[j]*totWW*1.1,procname=procnameww,obsname='ATLAS_VV_JJ') 
         model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.226,procname=procnameww,obsname='ATLAS_VV_JJ')
         model.add_lognormal_uncertainty("lumi_atlas",0.028,procname=procnameww,obsname='ATLAS_VV_JJ')
         # CMS syst
-#model.add_lognormal_uncertainty("normalisation_VVJJ",0.13,procname=procname,obsname='CMS_JJ_HP')
-#model.add_lognormal_uncertainty("lumicms",0.026,procname=procname,obsname='CMS_JJ_HP')
-#model.add_lognormal_uncertainty("normalisation_VVJJ",0.13,procname=procname,obsname='CMS_JJ_LP')
-#model.add_lognormal_uncertainty("lumicms",0.026,procname=procname,obsname='CMS_JJ_LP')
+        model.add_lognormal_uncertainty("normalisation_VVJJ",0.13,procname=procnameww,obsname='CMS_JJ_HP')
+        model.add_lognormal_uncertainty("lumicms",0.026,procname=procnameww,obsname='CMS_JJ_HP')
+        model.add_lognormal_uncertainty("normalisation_VVJJ",0.13,procname=procnamezz,obsname='CMS_JJ_LP')
+        model.add_lognormal_uncertainty("lumicms",0.026,procname=procnamezz,obsname='CMS_JJ_LP')
 
     procnamet='WZsemi'+str(mass[j])
     if (j==0):
@@ -153,14 +156,14 @@ for j in range(0,16,1):
 print group
 model.set_signal_process_groups( group )
 
-rangenorm = 3.0
-for p in model.distribution.get_parameters():
-    d = model.distribution.get_distribution(p)
-    if d['typ'] == 'gauss' and d['mean'] == 0.0 and d['width'] == 1.0 and p !='jesatlas' and p != 'mesatlas':
-        model.distribution.set_distribution_parameters(p, range = [-1*rangenorm, rangenorm])
-    
-    d = model.distribution.get_distribution(p)
-    print p, d
+#rangenorm = 3.0
+#for p in model.distribution.get_parameters():
+#    d = model.distribution.get_distribution(p)
+#    if d['typ'] == 'gauss' and d['mean'] == 0.0 and d['width'] == 1.0 and p !='jesatlas' and p != 'mesatlas':
+#        model.distribution.set_distribution_parameters(p, range = [-1*rangenorm, rangenorm])
+#    
+#    d = model.distribution.get_distribution(p)
+#    print p, d
 
 zlevel = zvalue_approx(model, "data", 1)
 expected, observed = asymptotic_cls_limits(model)

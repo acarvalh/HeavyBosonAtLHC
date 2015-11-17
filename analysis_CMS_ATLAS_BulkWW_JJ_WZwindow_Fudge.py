@@ -41,7 +41,7 @@ for j in range(0,11,1):
   model.add_lognormal_uncertainty("lumicms",0.026,procname=procnameWW,obsname='CMS_JJ_LP')
   
   # ATLAS syst
-  ArWW=fudgeWW[j]*0.8382
+  ArWW=fudgeWW[j]*0.8382*1.1
 
   model.scale_predictions(ArWW,procname=procnameWW,obsname="ATLAS_VV_JJ")#The fudge factor 
                                                                         

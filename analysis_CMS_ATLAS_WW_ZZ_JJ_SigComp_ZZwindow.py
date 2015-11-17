@@ -1,17 +1,20 @@
-model = build_model_from_rootfile(["ATLAS_VV_JJ/ATLAS_WZ_correct_toSigComp.root",
+model = build_model_from_rootfile(["CMS_VV_JJ/CMS_VV_jj_data.root",
+                                   "CMS_VV_JJ/CMS_VV_jj_BulkWW_1fb.root",
+                                   "CMS_VV_JJ/CMS_VV_jj_BulkZZ_1fb.root",
+                                   "ATLAS_VV_JJ/ATLAS_ZZ_correct_toSigComp.root",
+                                   "ATLAS_VV_JJ/ATLAS_ZZ_JJ_1fb_SignalRS_noZZname.root",
+                                   "ATLAS_VV_JJ/ATLAS_ZZ_JJ_1fb_Signal_oneSys.root",
                                    "ATLAS_VV_JJ/ATLAS_WW_JJ_1fb_SignalRS_noWWname.root",
-                                   "ATLAS_VV_JJ/ATLAS_WW_JJ_1fb_Signal_oneSys.root",
-                                   "ATLAS_VV_JJ/ATLAS_WZ_JJ_1fb_SignalWPrime_noWZname.root",
-                                   "ATLAS_VV_JJ/ATLAS_WZ_JJ_1fb_Signal_oneSys.root"
+                                   "ATLAS_VV_JJ/ATLAS_WW_JJ_1fb_Signal_oneSys.root"
                                    ])
 
 # 
-rr = 0.1
+rr = 10
 print rr
 rww =  rr/(1.+rr)
-rwz =  1./(1+rr)
+rzz =  1./(1+rr)
 
-filename='results/ATLAS_WW_WZ_JJ_WZSel_r'+str(rr)
+filename='results/CMS_ATLAS_WW_ZZ_JJ_ZZSel_r'+str(rr)
 expfile = filename+'_expected.txt'
 obsfile = filename+'_observed.txt'
 zfile = filename+'_zlevel.txt'
@@ -21,31 +24,47 @@ model.fill_histogram_zerobins(epsilon=0.001)
 mass=[1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500]
 
 
-fudgeZZ=[0.55619, 0.565121, 0.561593, 0.569191, 0.564982, 0.528031, 0.488941,0.488903, 0.40283, 0.401571, 0.387373]
+fudgeZZ=[0.531894, 0.555135, 0.566784, 0.601672, 0.630537, 0.618207, 0.596984, 0.616378, 0.519181, 0.520399, 0.495976]
 
-fudgeWW=[0.562062, 0.607006, 0.664361, 0.683049, 0.672502, 0.643021, 0.677244, 0.652601, 0.611615, 0.575068, 0.558068]
+fudgeWW=[0.531894, 0.555135, 0.566784, 0.601672, 0.630537, 0.618207, 0.596984, 0.616378, 0.519181, 0.520399, 0.495976]#tofix
 
 for j in range(0,11,1): 
 
   
   #for mass in range(1500,2500,100):
   #mass = 1800
-  procnamewz = "WZ"+str(mass[j])
-  procnameww = "BulkWW"+str(mass[j]) 
+  procnameww = "BulkWW"+str(mass[j])
+  procnamezz = "BulkZZ"+str(mass[j]) 
   #model.set_signal_processes(procnameww)
 
+  # CMS syst
+  model.add_lognormal_uncertainty("normalisation_VVJJ",0.1326,procname=procnameww,obsname='CMS_JJ_HP')
+  model.add_lognormal_uncertainty("lumicms",0.026,procname=procnameww,obsname='CMS_JJ_HP')
+  model.add_lognormal_uncertainty("normalisation_VVJJ",0.1326,procname=procnameww,obsname='CMS_JJ_LP')
+  model.add_lognormal_uncertainty("lumicms",0.026,procname=procnameww,obsname='CMS_JJ_LP')
+
+  # CMS syst
+  model.add_lognormal_uncertainty("normalisation_VVJJ",0.1326,procname=procnamezz,obsname='CMS_JJ_HP')
+  model.add_lognormal_uncertainty("lumicms",0.026,procname=procnamezz,obsname='CMS_JJ_HP')
+  model.add_lognormal_uncertainty("normalisation_VVJJ",0.1326,procname=procnamezz,obsname='CMS_JJ_LP')
+  model.add_lognormal_uncertainty("lumicms",0.026,procname=procnamezz,obsname='CMS_JJ_LP')
+  
   # ATLAS syst
-  Arww=rww*0.8382 
-  Arwz=rwz
+  Arzz=fudgeZZ[j]*rzz*1.1 
+  Arww=fudgeWW[j]*rww*0.7027*1.1
                                                                         
   model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.226,procname=procnameww,obsname='ATLAS_VV_JJ')
-  #model.add_lognormal_uncertainty("lumi_atlas",0.028,procname=procnameww,obsname='ATLAS_VV_JJ')
-  model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.226,procname=procnamewz,obsname='ATLAS_VV_JJ')
-  #model.add_lognormal_uncertainty("lumi_atlas",0.028,procname=procnamezz,obsname='ATLAS_VV_JJ')
+  model.add_lognormal_uncertainty("lumi_atlas",0.028,procname=procnameww,obsname='ATLAS_VV_JJ')
+  model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.226,procname=procnamezz,obsname='ATLAS_VV_JJ')
+  model.add_lognormal_uncertainty("lumi_atlas",0.028,procname=procnamezz,obsname='ATLAS_VV_JJ')
 
-  model.scale_predictions(Arwz,procname=procnamewz,obsname="ATLAS_VV_JJ")#The fudge factor  
+  model.scale_predictions(Arzz,procname=procnamezz,obsname="ATLAS_VV_JJ")#The fudge factor  
   model.scale_predictions(Arww,procname=procnameww,obsname="ATLAS_VV_JJ")#The fudge factor 
         
+  model.scale_predictions(rww,procname=procnameww,obsname="CMS_JJ_HP")#The fudge factor                                                    
+  model.scale_predictions(rzz,procname=procnamezz,obsname="CMS_JJ_HP")#The fudge factor  
+  model.scale_predictions(rww,procname=procnameww,obsname="CMS_JJ_LP")#The fudge factor                                                    
+  model.scale_predictions(rzz,procname=procnamezz,obsname="CMS_JJ_LP")#The fudge factor 
 
   procname='VVBulk'+str(mass[j])
   #group = {procname : [procnameww, procnamezz]}
@@ -53,9 +72,9 @@ for j in range(0,11,1):
  
   # add signal to group 
   if (j==0):
-    group = {procname : [procnameww, procnamewz]}
+    group = {procname : [procnameww, procnamezz]}
   else:
-    group[procname] = [procnameww, procnamewz]
+    group[procname] = [procnameww, procnamezz]
 print group
 
 
@@ -71,7 +90,7 @@ model.set_signal_process_groups( group )
 #    print p, d
 
 expected, observed = asymptotic_cls_limits(model)
-clevel = pl_interval(model, "data", 1)
+
 zlevel = zvalue_approx(model, "data", 1)
 pl_interval = pl_interval(model, "data", 1)
 model_summary(model, True)
@@ -88,7 +107,6 @@ observed.write_txt(obsfile)
 #  print expected, observed
 #print zlevel
 #  print pvalue
-
 
 current = 1
 with open(zfile, 'w') as fff:
@@ -121,6 +139,8 @@ with open(zfile, 'w') as fff:
         fff.write( '\n' )
         current += 1
 fff.close()
-#report.write_html('htmlout')
+
 print rr
-# ../theta/utils2/theta-auto.py analysis_ATLAS_WW_WZ_JJ_SigComp_WZwindow.py
+report.write_html('htmlout')
+
+# ../theta/utils2/theta-auto.py analysis_CMS_ATLAS_WW_ZZ_JJ_SigComp_ZZwindow.py

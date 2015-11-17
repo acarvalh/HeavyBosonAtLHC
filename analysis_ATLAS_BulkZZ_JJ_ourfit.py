@@ -1,41 +1,71 @@
 model = build_model_from_rootfile([
                                    "ATLAS_VV_JJ/ATLAS_ZZ_correct_toSigComp.root",
-                                   # "ATLAS_VV_JJ/ATLAS_ZZ_correct_toSigComp_rescaled.root",
+                                   #"ATLAS_VV_JJ/ATLAS_ZZ_correct_toSigComp_rescaled.root",
                                    #"ATLAS_VV_JJ/ATLAS_ZZ_correct_toSigComp_rescaled_sideband.root",
+                                   #"ATLAS_VV_JJ/ATLAS_ZZJJ__DATA_noZZname_publicBackground.root",
+                                   #
                                    "ATLAS_VV_JJ/ATLAS_ZZ_JJ_1fb_SignalRS_noZZname.root",
                                    "ATLAS_VV_JJ/ATLAS_ZZ_JJ_1fb_Signal_oneSys.root"])
 # 
 # print model
 # 
-filename='results/ATLAS_VV_JJ_BulkZZ_ourfit'
-expfile = filename+'_expected.txt'
-obsfile = filename+'_observed.txt'
-zfile = filename+'_zlevel.txt'
-z17 = filename+'_Lik1700.txt'
-z18 = filename+'_Lik1800.txt'
-z19 = filename+'_Lik1900.txt'
-z20 = filename+'_Lik2000.txt'
-z21 = filename+'_Lik2100.txt'
-z22 = filename+'_Lik2200.txt'
+
+fudge = 1
+alternativeBKG = 0
+#alterLabel = '_rescaled'
+#alterLabel = '_rescaled_sideband'
+alterLabel = '_public'
 
 model.set_signal_processes("BulkZZ*")
-rangenorm = 5
 model.fill_histogram_zerobins(epsilon=0.001)
 mass=[1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500]
+fudgeZZJJATLAS=[0.55619, 0.565121, 0.561593, 0.569191, 0.564982, 0.528031, 0.488941,0.488903, 0.40283, 0.401571, 0.387373]
 
+lumiSystNameATLAS = "lumiSystATLAS"
+lumiSystValueATLAS = 0.028
+
+filename='results/ATLAS_VV_JJ_BulkZZ_ourfit'
+
+fudgeLabel = '_Fudge'
+if fudge :
+    expfile = filename+fudgeLabel+'_expected.txt'
+    obsfile = filename+fudgeLabel+'_observed.txt'
+    zfile = filename+fudgeLabel+'_zlevel.txt'
+    z17 = filename+fudgeLabel+'_Lik1700.txt'
+    z18 = filename+fudgeLabel+'_Lik1800.txt'
+    z19 = filename+fudgeLabel+'_Lik1900.txt'
+    z20 = filename+fudgeLabel+'_Lik2000.txt'
+    z21 = filename+fudgeLabel+'_Lik2100.txt'
+    z22 = filename+fudgeLabel+'_Lik2200.txt'
+elif alternativeBKG :
+    expfile = filename+alterLabel+'_expected.txt'
+    obsfile = filename+alterLabel+'_observed.txt'
+    zfile = filename+alterLabel+'_zlevel.txt'
+    z17 = filename+alterLabel+'_Lik1700.txt'
+    z18 = filename+alterLabel+'_Lik1800.txt'
+    z19 = filename+alterLabel+'_Lik1900.txt'
+    z20 = filename+alterLabel+'_Lik2000.txt'
+    z21 = filename+alterLabel+'_Lik2100.txt'
+    z22 = filename+alterLabel+'_Lik2200.txt'
+else :
+    expfile = filename+'_expected.txt'
+    obsfile = filename+'_observed.txt'
+    zfile = filename+'_zlevel.txt'
+    z17 = filename+'_Lik1700.txt'
+    z18 = filename+'_Lik1800.txt'
+    z19 = filename+'_Lik1900.txt'
+    z20 = filename+'_Lik2000.txt'
+    z21 = filename+'_Lik2100.txt'
+    z22 = filename+'_Lik2200.txt'
+
+#####################################################################
 for j in range(0,11,1): 
     procname = "BulkZZ"+str(mass[j])
-    # model.scale_predictions(0.5,procname=procname,obsname='ATLAS_VV_JJ')#The fudge factor                                                                 
+    if fudge :
+       model.scale_predictions(fudgeZZJJATLAS[j],procname=procname,obsname='ATLAS_VV_JJ') 
     model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.226,procname=procname,obsname='ATLAS_VV_JJ')
-    model.add_lognormal_uncertainty("lumi_atlas",0.028,procname=procname,obsname='ATLAS_VV_JJ')
-
-#for p in model.distribution.get_parameters():
-#    d = model.distribution.get_distribution(p)
-#    if d['typ'] == 'gauss' and d['mean'] == 0.0 and d['width'] == 1.0 and p !='jesatlas' and p != 'mesatlas':
-#        model.distribution.set_distribution_parameters(p, range = [-1*rangenorm, rangenorm])
-#    
-#    d = model.distribution.get_distribution(p)
-#    print p, d
+    model.add_lognormal_uncertainty(lumiSystNameATLAS,lumiSystValueATLAS,procname=procname,obsname='ATLAS_VV_JJ')
+######################################################################
 
 zlevel = zvalue_approx(model, "data", 1)
 expected, observed = asymptotic_cls_limits(model)
@@ -140,4 +170,5 @@ with open(z22, 'w') as fff:
         fff.write( str(nllLik) )
 fff.close()
 
+print zfile
 # ../theta/utils2/theta-auto.py analysis_ATLAS_BulkZZ_JJ_ourfit.py

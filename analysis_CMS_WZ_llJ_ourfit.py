@@ -18,40 +18,46 @@ model.set_signal_processes("WZ*")
 #rangenorm = 2.5
 model.fill_histogram_zerobins(epsilon=0.001)
 mass=[1000,1100,1200,1300,1400,1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500]
-fudgeZZllCMS=[1.09879, 1.05341, 1.00664, 1.03848, 1.11259, 1.02073, 1.11013, 1.10722, 1.15051, 1.0962, 1.13582, 1.15223, 1.20053, 1.16918, 1.2755, 1.31541]
+fudge = 1
+fudgeZZllJCMS=[1.09879, 1.05341, 1.00664, 1.03848, 1.11259, 1.02073, 1.11013, 1.10722, 1.15051, 1.0962, 1.13582, 1.15223, 1.20053, 1.16918, 1.2755, 1.31541]
 
-lumiSystName = "lumiSystCMS"
-lumiSystValue = 0.026
+lumiSystNameCMS = "lumiSystCMS"
+lumiSystValueCMS = 0.026
 
-filename='results/CMS_VV_llJ_WZ_ourfit_Fudge'
-expfile = filename+'_expected.txt'
-obsfile = filename+'_observed.txt'
-zfile = filename+'_zlevel.txt'
+filename='results/CMS_VV_llJ_WZ_ourfit'
+fudgeLabel = '_Fudge'
+if fudge :
+    expfile = filename+fudgeLabel+'_expected.txt'
+    obsfile = filename+fudgeLabel+'_observed.txt'
+    zfile = filename+fudgeLabel+'_zlevel.txt'
+else :
+    expfile = filename+'_expected.txt'
+    obsfile = filename+'_observed.txt'
+    zfile = filename+'_zlevel.txt'
 
 for j in range(0,16,1): 
-#    # model.scale_predictions(fudgeZZllCMS[j],procname=procname,obsname='ATLAS_VV_JJ_ZZ')#The fudge factor    
     procname = "WZ"+str(mass[j])
-    model.scale_predictions(fudgeZZllCMS[j],procname=procname,obsname='CMS_ZVmmJ_HP')
-    model.scale_predictions(fudgeZZllCMS[j],procname=procname,obsname='CMS_ZVeeJ_HP')
-    model.scale_predictions(fudgeZZllCMS[j],procname=procname,obsname='CMS_ZVmmJ_LP')
-    model.scale_predictions(fudgeZZllCMS[j],procname=procname,obsname='CMS_ZVeeJ_LP')
+    if fudge :
+        model.scale_predictions(fudgeZZllJCMS[j],procname=procname,obsname='CMS_ZVmmJ_HP')
+        model.scale_predictions(fudgeZZllJCMS[j],procname=procname,obsname='CMS_ZVeeJ_HP')
+        model.scale_predictions(fudgeZZllJCMS[j],procname=procname,obsname='CMS_ZVmmJ_LP')
+        model.scale_predictions(fudgeZZllJCMS[j],procname=procname,obsname='CMS_ZVeeJ_LP')
     #    # CMS syst
     # shape summed quadratically 
-    model.add_lognormal_uncertainty("normalisation_CMS_VV_lnuj_MUHP",0.03,procname=procname,obsname='CMS_ZVmmJ_HP')
-    model.add_lognormal_uncertainty("normalisation_CMS_VV_lnuj_ELEHP",0.037,procname=procname,obsname='CMS_ZVeeJ_HP')
-    model.add_lognormal_uncertainty("normalisation_CMS_WVnnuJ_LP",0.03,procname=procname,obsname='CMS_ZVmmJ_LP')
-    model.add_lognormal_uncertainty("normalisation_CMS_VV_lnuj_ELELP",0.037,procname=procname,obsname='CMS_ZVeeJ_LP')
-    
-    model.add_lognormal_uncertainty("catMigration_CMS_VV_lnuj_MUHP",0.09,procname=procname,obsname='CMS_ZVmmJ_HP')
-    model.add_lognormal_uncertainty("catMigration_CMS_VV_lnuj_ELEHP",0.09,procname=procname,obsname='CMS_ZVeeJ_HP')
+    model.add_lognormal_uncertainty("normalisation_CMS_VV_llj_MUHP",0.03,procname=procname,obsname='CMS_ZVmmJ_HP')
+    model.add_lognormal_uncertainty("normalisation_CMS_VV_llj_ELEHP",0.037,procname=procname,obsname='CMS_ZVeeJ_HP')
+    model.add_lognormal_uncertainty("normalisation_CMS_VV_llj_MULP",0.03,procname=procname,obsname='CMS_ZVmmJ_LP')
+    model.add_lognormal_uncertainty("normalisation_CMS_VV_llj_ELELP",0.037,procname=procname,obsname='CMS_ZVeeJ_LP')
     # anti correlated
-    model.add_lognormal_uncertainty("catMigration_CMS_WVnnuJ_LP",-0.24,procname=procname,obsname='CMS_ZVmmJ_LP')
-    model.add_lognormal_uncertainty("catMigration_CMS_VV_lnuj_ELELP",-0.24,procname=procname,obsname='CMS_ZVeeJ_LP')
+    model.add_lognormal_uncertainty("catMigration_CMS_VV_llj_MUHP",0.09,procname=procname,obsname='CMS_ZVmmJ_HP')
+    model.add_lognormal_uncertainty("catMigration_CMS_VV_llj_ELEHP",0.09,procname=procname,obsname='CMS_ZVeeJ_HP')
+    model.add_lognormal_uncertainty("catMigration_CMS_VV_llj_MULP",-0.24,procname=procname,obsname='CMS_ZVmmJ_LP')
+    model.add_lognormal_uncertainty("catMigration_CMS_VV_llj_ELELP",-0.24,procname=procname,obsname='CMS_ZVeeJ_LP')
     # lumi
-    model.add_lognormal_uncertainty(lumiSystName,lumiSystValue,procname=procname,obsname='CMS_ZVmmJ_HP')
-    model.add_lognormal_uncertainty(lumiSystName,lumiSystValue,procname=procname,obsname='CMS_ZVeeJ_HP')
-    model.add_lognormal_uncertainty(lumiSystName,lumiSystValue,procname=procname,obsname='CMS_ZVmmJ_LP')
-    model.add_lognormal_uncertainty(lumiSystName,lumiSystValue,procname=procname,obsname='CMS_ZVeeJ_LP')
+    model.add_lognormal_uncertainty(lumiSystNameCMS,lumiSystValueCMS,procname=procname,obsname='CMS_ZVmmJ_HP')
+    model.add_lognormal_uncertainty(lumiSystNameCMS,lumiSystValueCMS,procname=procname,obsname='CMS_ZVeeJ_HP')
+    model.add_lognormal_uncertainty(lumiSystNameCMS,lumiSystValueCMS,procname=procname,obsname='CMS_ZVmmJ_LP')
+    model.add_lognormal_uncertainty(lumiSystNameCMS,lumiSystValueCMS,procname=procname,obsname='CMS_ZVeeJ_LP')
 
 expected, observed = asymptotic_cls_limits(model)
 print expected
@@ -105,6 +111,6 @@ with open(zfile, 'w') as fff:
         current += 1
 fff.close()
 
-
-report.write_html('htmlout')
+print zfile
+#report.write_html('htmlout')
 # ../theta/utils2/theta-auto.py analysis_CMS_WZ_llJ_ourfit.py

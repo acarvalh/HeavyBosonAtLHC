@@ -5,7 +5,7 @@ model = build_model_from_rootfile([
                                    "ATLAS_VV_JJ/ATLAS_ZZ_JJ_1fb_SignalRS_noZZname.root",
                                    "ATLAS_VV_JJ/ATLAS_ZZ_JJ_1fb_Signal_oneSys.root"])
 # 
-rr = 10
+rr = 0.1
 print rr
 rww =  rr/(1.+rr)
 rzz =  1./(1+rr)
