@@ -5,74 +5,77 @@ model = build_model_from_rootfile(["ATLAS_VV_JJ/ATLAS_ZZ_correct_toSigComp.root"
                                    "CMS_VV_JJ/CMS_VV_jj_BulkZZ_1fb.root"]) #,"CMS_VV_JJ/CMS_VV_jj_BulkZZ_1fb.root"
 
 # print model
+fudge = 0
 
 model.set_signal_processes("BulkZZ*")
-
-fudgeZZ=[0.55619, 0.565121, 0.561593, 0.569191, 0.564982, 0.528031, 0.488941,0.488903, 0.40283, 0.401571, 0.387373]
-
-fudgeWW=[0.562062, 0.607006, 0.664361, 0.683049, 0.672502, 0.643021, 0.677244, 0.652601, 0.611615, 0.575068, 0.558068]
-
-filename='results/CMS_ATLAS_VV_JJ_BulkZZ_ourfit'
-expfile = filename+'_expected.txt'
-obsfile = filename+'_observed.txt'
-zfile = filename+'_zlevel.txt'
-
-#fudge=[1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+model.fill_histogram_zerobins(epsilon=0.001)
 mass=[1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500]
 
-model.fill_histogram_zerobins(epsilon=0.001)
+fudgeZZJJATLAS=[0.55619, 0.565121, 0.561593, 0.569191, 0.564982, 0.528031, 0.488941,0.488903, 0.40283, 0.401571, 0.387373]
+fudgeWWJJATLAS=[0.513282, 0.553725, 0.609789, 0.637297, 0.642589, 0.626628, 0.610983, 0.601232, 0.560182, 0.538367, 0.557967]
+fudgeWZJJATLAS=[0.562062, 0.607006, 0.664361, 0.683049, 0.672502, 0.643021, 0.677244,0.652601, 0.611615, 0.575068, 0.558068]
+
+lumiSystNameCMS = "lumiSystCMS"
+lumiSystValueCMS = 0.026
+lumiSystNameATLAS = "lumiSystATLAS"
+lumiSystValueATLAS = 0.028
+
+narrow=1.1
+
+filename='results/CMS_ATLAS_VV_JJ_BulkZZ_ourfit'
+fudgeLabel = '_Fudge'
+if fudge :
+    expfile = filename+fudgeLabel+'_expected.txt'
+    obsfile = filename+fudgeLabel+'_observed.txt'
+    zfile = filename+fudgeLabel+'_zlevel.txt'
+    z17 = filename+fudgeLabel+'_Lik1700.txt'
+    z18 = filename+fudgeLabel+'_Lik1800.txt'
+    z19 = filename+fudgeLabel+'_Lik1900.txt'
+    z20 = filename+fudgeLabel+'_Lik2000.txt'
+    z21 = filename+fudgeLabel+'_Lik2100.txt'
+    z22 = filename+fudgeLabel+'_Lik2200.txt'
+else :
+    expfile = filename+'_expected.txt'
+    obsfile = filename+'_observed.txt'
+    zfile = filename+'_zlevel.txt'
+    z17 = filename+'_Lik1700.txt'
+    z18 = filename+'_Lik1800.txt'
+    z19 = filename+'_Lik1900.txt'
+    z20 = filename+'_Lik2000.txt'
+    z21 = filename+'_Lik2100.txt'
+    z22 = filename+'_Lik2200.txt'
+
 for j in range(0,11,1): 
-    procname = "BulkZZ"+str(mass[j])
-    #model.scale_predictions(fudge[j],procname=procname,obsname='ATLAS_VV_JJ')#The fudge factor          
-    #model.scale_predictions(1.1,procname=procname,obsname='ATLAS_VV_JJ')#The fudge factor                    
+    procname = "BulkZZ"+str(mass[j])  
+    
+    #####################################################################################################
+    # Fudge
+    if fudge :  model.scale_predictions(fudgeZZJJATLAS[j]*narrow,procname=procname,obsname='ATLAS_VV_JJ') 
+    else : model.scale_predictions(narrow,procname=procname,obsname='ATLAS_VV_JJ') 
+    ######################################################################################################  
     model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.226,procname=procname,obsname='ATLAS_VV_JJ')
-    model.add_lognormal_uncertainty("lumi_atlas",0.028,procname=procname,obsname='ATLAS_VV_JJ')
+    model.add_lognormal_uncertainty(lumiSystNameATLAS,lumiSystValueATLAS,procname=procname,obsname='ATLAS_VV_JJ')
     # CMS syst
     model.add_lognormal_uncertainty("normalisation_VVJJ",0.13,procname=procname,obsname='CMS_JJ_HP')
-    model.add_lognormal_uncertainty("lumicms",0.026,procname=procname,obsname='CMS_JJ_HP')
+    model.add_lognormal_uncertainty(lumiSystNameCMS,lumiSystValueCMS,procname=procname,obsname='CMS_JJ_HP')
     model.add_lognormal_uncertainty("normalisation_VVJJ",0.13,procname=procname,obsname='CMS_JJ_LP')
-    model.add_lognormal_uncertainty("lumicms",0.026,procname=procname,obsname='CMS_JJ_LP')
+    model.add_lognormal_uncertainty(lumiSystNameCMS,lumiSystValueCMS,procname=procname,obsname='CMS_JJ_LP')
 
-# with fudge 3.5
-# no fudge: 2.5
-
-for p in model.distribution.get_parameters():
-    d = model.distribution.get_distribution(p)
-    if d['typ'] == 'gauss' and d['mean'] == 0.0 and d['width'] == 1.0 and ( p=='jesatlas' or p == 'mesatlas'):
-        model.distribution.set_distribution_parameters(p, range = [-2.5, 2.5])
-    elif d['typ'] == 'gauss' and d['mean'] == 0.0 and d['width'] == 1.0 and p !='jesatlas' and p != 'mesatlas':
-        model.distribution.set_distribution_parameters(p, range = [-2.0, 2.0])
-
-    d = model.distribution.get_distribution(p)
-    print p, d
-
-expected, observed = asymptotic_cls_limits(model)
-clevel = pl_interval(model, "data", 1)
 zlevel = zvalue_approx(model, "data", 1)
+expected, observed = asymptotic_cls_limits(model)
 pl_interval = pl_interval(model, "data", 1)
-print model
-model_summary(model, True)
-print expected, observed
+nll = nll_scan(model, "data", 1, range=[0.0, 35.0])
+print expected
+print observed
 print zlevel
-print pvalue
 
 expected.write_txt(expfile)
 observed.write_txt(obsfile)
 
-print expfile
-#  clevel = pl_interval(model, "data", 1)
-#  zlevel = zvalue_approx(model, "data", 1)
-#  model_summary(model, True)
-#  print expected, observed
-#print zlevel
-#  print pvalue
-
-
-
-current = 1
+current = 0
 with open(zfile, 'w') as fff:
-    while current < len(zlevel)+1:
-        masse = current*100+1400
+    while current < len(zlevel):
+        masse = mass[current]
         sig='BulkZZ'+str(masse)
         zl = zlevel[sig]['Z'][0]
         pl = Z_to_p(zl)
@@ -101,5 +104,60 @@ with open(zfile, 'w') as fff:
         current += 1
 fff.close()
 
+with open(z17, 'w') as fff:
+        masse = 1700
+        print str(masse)
+        sig='BulkZZ'+str(masse)
+        nllLik = nll[sig][0]
+        #print str(mass) , " DLik ", nllLik
+        fff.write( str(nllLik) )
+fff.close()
+
+with open(z18, 'w') as fff:
+        masse = 1800
+        print str(masse)
+        sig='BulkZZ'+str(masse)
+        nllLik = nll[sig][0]
+        #print str(mass) , " DLik ", nllLik
+        fff.write( str(nllLik) )
+fff.close()
+
+with open(z19, 'w') as fff:
+        masse = 1900
+        print str(masse)
+        sig='BulkZZ'+str(masse)
+        nllLik = nll[sig][0]
+        #print str(mass) , " DLik ", nllLik
+        fff.write( str(nllLik) )
+fff.close()
+
+with open(z20, 'w') as fff:
+        masse = 2000
+        print str(masse)
+        sig='BulkZZ'+str(masse)
+        nllLik = nll[sig][0]
+        #print str(mass) , " DLik ", nllLik
+        fff.write( str(nllLik) )
+fff.close()
+
+with open(z21, 'w') as fff:
+        masse = 2100
+        print str(masse)
+        sig='BulkZZ'+str(masse)
+        nllLik = nll[sig][0]
+        #print str(mass) , " DLik ", nllLik
+        fff.write( str(nllLik) )
+fff.close()
+
+with open(z22, 'w') as fff:
+        masse = 2200
+        print str(masse)
+        sig='BulkZZ'+str(masse)
+        nllLik = nll[sig][0]
+        #print str(mass) , " DLik ", nllLik
+        fff.write( str(nllLik) )
+fff.close()
+
+print zfile
 
 # ../theta/utils2/theta-auto.py analysis_CMS_ATLAS_BulkZZ_JJ_ourfit.py 

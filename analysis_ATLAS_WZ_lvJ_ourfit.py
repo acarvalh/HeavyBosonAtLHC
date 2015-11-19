@@ -11,21 +11,30 @@ model.set_signal_processes("WZ*")
 rangenorm = 5
 model.fill_histogram_zerobins(epsilon=0.001)
 mass=[1000, 1100,1200,1300,1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500]
-fudgeWZlvJ = [0.795712, 0.929701, 0.936624, 0.980215, 1.03092, 1.04214, 1.07966, 1.04453, 1.0487, 1.00702, 0.959159, 0.880764, 0.787317, 0.729852, 0.674062, 0.645124]
 
-#filename='results/ATLAS_VV_lvJ_WZ_ourfit'
-filename='results/ATLAS_VV_lvJ_WZ_ourfit_Fudge'
-expfile = filename+'_expected.txt'
-obsfile = filename+'_observed.txt'
-zfile = filename+'_zlevel.txt'
+fudgeWZlvJATLAS = [0.795712, 0.929701, 0.936624, 0.980215, 1.03092, 1.04214, 1.07966, 1.04453, 1.0487, 1.00702, 0.959159, 0.880764, 0.787317, 0.729852, 0.674062, 0.645124] 
+fudgeWWlvJATLAS = [1.34167, 1.21314, 1.08996, 1.08625, 1.11429, 1.14418, 1.1409,  1.06639, 1.08099, 1.06824, 1.01071, 0.963582, 0.904669, 0.831587, 0.787872, 0.746516]
+
+lumiSystNameATLAS = "lumiSystATLAS"
+lumiSystValueATLAS = 0.028
+
+fudge=1
+filename='results/ATLAS_VV_lvJ_WZ_ourfit'
+fudgeLabel = '_Fudge'
+if fudge :
+    expfile = filename+fudgeLabel+'_expected.txt'
+    obsfile = filename+fudgeLabel+'_observed.txt'
+    zfile = filename+fudgeLabel+'_zlevel.txt'
+else : 
+    expfile = filename+'_expected.txt'
+    obsfile = filename+'_observed.txt'
+    zfile = filename+'_zlevel.txt'
 
 for j in range(0,16,1): 
     procname = "WZ"+str(mass[j])
-    model.scale_predictions(fudgeWZlvJ[j],procname=procname,obsname='ATLAS_WVlnJ_MR')#The fudge factor                 
-    model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.1,procname=procname,obsname='ATLAS_WVlnJ_MR')
-    model.add_lognormal_uncertainty("lumi_atlas",0.028,procname=procname,obsname='ATLAS_WVlnJ_MR')
-#    model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.1,procname=procname,obsname='ATLAS_WVlnJ_HR')
-#    model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.1,procname=procname,obsname='ATLAS_WVlnJ_HR')
+    if fudge : model.scale_predictions(fudgeWZlvJATLAS[j],procname=procname,obsname='ATLAS_WVlnJ_MR')#The fudge factor                 
+    model.add_lognormal_uncertainty("normalisation_VVlvJ_atlas",0.1,procname=procname,obsname='ATLAS_WVlnJ_MR')
+    model.add_lognormal_uncertainty(lumiSystNameATLAS,lumiSystValueATLAS,procname=procname,obsname='ATLAS_WVlnJ_MR')
 
 
 
@@ -79,5 +88,5 @@ with open(zfile, 'w') as fff:
         current += 1
 fff.close()
 
-report.write_html('htmlout')
+
 # ../theta/utils2/theta-auto.py analysis_ATLAS_WZ_lvJ_ourfit.py

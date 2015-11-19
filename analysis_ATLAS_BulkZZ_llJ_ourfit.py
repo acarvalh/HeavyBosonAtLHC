@@ -14,7 +14,7 @@ fudgeZZllJATLAS=[1.2004, 1.1734, 1.03546, 1.04473, 1.06224, 0.939548, 1.0411, 1.
 lumiSystNameATLAS = "lumiSystATLAS"
 lumiSystValueATLAS = 0.028
 
-fudge=1
+fudge=0
 filename='results/ATLAS_VV_llJ_BulkZZ_ourfit' 
 fudgeLabel = '_Fudge'
 if fudge :
@@ -79,5 +79,4 @@ with open(zfile, 'w') as fff:
 fff.close()
 
 print zfile
-#report.write_html('htmlout')
 # ../theta/utils2/theta-auto.py analysis_ATLAS_BulkZZ_llJ_ourfit.py

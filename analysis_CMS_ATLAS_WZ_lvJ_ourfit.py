@@ -68,7 +68,7 @@ for j in range(0,16,1):
         model.scale_predictions(fudgeWWlvCMS[j],procname=procname,obsname='CMS_VV_lnuj_MULP')
         model.scale_predictions(fudgeWWlvCMS[j],procname=procname,obsname='CMS_VV_lnuj_ELELP')
         # ATLAS lvJ
-        model.scale_predictions(fudgeWWlvJATLAS[j],procname=procname,obsname='ATLAS_WVlnJ_MR')#The fudge factor         
+        model.scale_predictions(fudgeWWlvJATLAS[j],procname=procname,obsname='ATLAS_WVlnJ_MR')        
     ######################################################################################################
     # ATLAS syst                                                               
     model.add_lognormal_uncertainty("normalisation_VVlnuJ_atlas",0.1,procname=procname,obsname='ATLAS_WVlnJ_MR')
@@ -77,12 +77,12 @@ for j in range(0,16,1):
     # shape summed quadratically 
     model.add_lognormal_uncertainty("normalisation_CMS_VV_lnuj_MUHP",0.03,procname=procname,obsname='CMS_VV_lnuj_MUHP')
     model.add_lognormal_uncertainty("normalisation_CMS_VV_lnuj_ELEHP",0.037,procname=procname,obsname='CMS_VV_lnuj_ELEHP')
-    model.add_lognormal_uncertainty("normalisation_CMS_WVnnuJ_LP",0.03,procname=procname,obsname='CMS_VV_lnuj_MULP')
+    model.add_lognormal_uncertainty("normalisation_CMS_WV_lnuJ_MULP",0.03,procname=procname,obsname='CMS_VV_lnuj_MULP')
     model.add_lognormal_uncertainty("normalisation_CMS_VV_lnuj_ELELP",0.037,procname=procname,obsname='CMS_VV_lnuj_ELELP')
     # migration
     model.add_lognormal_uncertainty("catMigration_CMS_VV_lnuj_MUHP",0.09,procname=procname,obsname='CMS_VV_lnuj_MUHP')
     model.add_lognormal_uncertainty("catMigration_CMS_VV_lnuj_ELEHP",0.09,procname=procname,obsname='CMS_VV_lnuj_ELEHP')
-    model.add_lognormal_uncertainty("catMigration_CMS_WVnnuJ_LP",-0.24,procname=procname,obsname='CMS_VV_lnuj_MULP')
+    model.add_lognormal_uncertainty("catMigration_CMS_WV_lnuJ_MULP",-0.24,procname=procname,obsname='CMS_VV_lnuj_MULP')
     model.add_lognormal_uncertainty("catMigration_CMS_VV_lnuj_ELELP",-0.24,procname=procname,obsname='CMS_VV_lnuj_ELELP')
     # lumi
     model.add_lognormal_uncertainty(lumiSystName,lumiSystValue,procname=procname,obsname='CMS_VV_lnuj_MUHP')

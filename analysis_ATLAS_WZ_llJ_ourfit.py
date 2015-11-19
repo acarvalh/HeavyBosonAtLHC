@@ -9,6 +9,8 @@ model = build_model_from_rootfile(["ATLAS_VV_llJ/ATLAS_ZVllJ_newNaming.root",
 model.set_signal_processes("WZ*")
 model.fill_histogram_zerobins(epsilon=0.001)
 mass=[1000,1100,1200,1300,1400,1500, 1600, 1700, 1800, 1900, 2000]
+
+fudgeZZllJATLAS=[1.2004, 1.1734, 1.03546, 1.04473, 1.06224, 0.939548, 1.0411, 1.02485, 1.00821, 1.01614, 0.915197]
 fudgeWZllJATLAS = [1.04091, 0.959243, 0.86275, 0.869074, 0.844375, 0.8973, 0.852316, 0.817111, 0.843688, 0.777118, 0.768438]
 
 lumiSystNameATLAS = "lumiSystATLAS"

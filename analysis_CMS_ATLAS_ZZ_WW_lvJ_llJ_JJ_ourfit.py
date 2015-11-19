@@ -37,13 +37,14 @@ model = build_model_from_rootfile([# CMS lvJ WW
 # 
 # print model
 
-rr = 0.1
+rr = 10
 print rr
 rww =  rr/(1.+rr)
 rzz =  1./(1+rr)
 
 fudge =1
 window = 0.7027
+narrow=1.1
 
 model.fill_histogram_zerobins(epsilon=0.001)
 mass=[1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500]
@@ -64,8 +65,6 @@ lumiSystNameCMS = "lumiSystCMS"
 lumiSystValueCMS = 0.026
 lumiSystNameATLAS = "lumiSystATLAS"
 lumiSystValueATLAS = 0.028
-
-totWW= rww*0.7027
 
 filename='results/CMS_ATLAS_VV_lvJ_llJ_JJ_ZZ_WW_ourfit'
 fudgeLabel = '_Fudge'
@@ -90,11 +89,6 @@ else :
     z21 = filename+'_r' +str(rr)+'_Lik2100.txt'
     z22 = filename+'_r' +str(rr)+'_Lik2200.txt'
 
-narrow=1.1
-
-lumiSystName = "lumiSystCMS"
-lumiSystValue = 0.026
-
 for j in range(0,16,1): 
     procnamezz = "BulkZZ"+str(mass[j])
     procnameww = "BulkWW"+str(mass[j])
@@ -107,10 +101,12 @@ for j in range(0,16,1):
         model.scale_predictions(fudgeZZllCMS[j]*rzz,procname=procnamezz,obsname='CMS_ZVmmJ_LP')
         model.scale_predictions(fudgeZZllCMS[j]*rzz,procname=procnamezz,obsname='CMS_ZVeeJ_LP')
         # CMS lvJ
-        model.scale_predictions(fudgeZZllCMS[j]*rww,procname=procnameww,obsname='CMS_VV_lnuj_MUHP')#The fudge factor    
-        model.scale_predictions(fudgeZZllCMS[j]*rww,procname=procnameww,obsname='CMS_VV_lnuj_MULP')#The fudge factor    
-        model.scale_predictions(fudgeZZllCMS[j]*rww,procname=procnameww,obsname='CMS_VV_lnuj_ELEHP')#The fudge factor    
-        model.scale_predictions(fudgeZZllCMS[j]*rww,procname=procnameww,obsname='CMS_VV_lnuj_ELELP')#The fudge factor   
+        model.scale_predictions(fudgeZZllCMS[j]*rww,procname=procnameww,obsname='CMS_VV_lnuj_MUHP')#The same ll fudge factor    
+        model.scale_predictions(fudgeZZllCMS[j]*rww,procname=procnameww,obsname='CMS_VV_lnuj_MULP')#The same ll fudge factor    
+        model.scale_predictions(fudgeZZllCMS[j]*rww,procname=procnameww,obsname='CMS_VV_lnuj_ELEHP')#The same ll fudge factor
+        model.scale_predictions(fudgeZZllCMS[j]*rww,procname=procnameww,obsname='CMS_VV_lnuj_ELELP')#The same ll fudge factor
+        # ATLAS lvJ
+        model.scale_predictions(fudgeWWlvJATLAS[j],procname=procnameww,obsname='ATLAS_WVlnJ_MR')
         # ATLAS llJ
         if j<11 :
             model.scale_predictions(fudgeZZllJATLAS[j]*rzz,procname=procnamezz,obsname='ATLAS_ZVllJ_MR')#The fudge factor
@@ -166,13 +162,13 @@ for j in range(0,16,1):
     model.add_lognormal_uncertainty("catMigration_CMS_VV_llj_ELEHP",0.09,procname=procnamezz,obsname='CMS_ZVeeJ_HP')
     model.add_lognormal_uncertainty("catMigration_CMS_WVllJ_LP",-0.24,procname=procnamezz,obsname='CMS_ZVmmJ_LP')
     model.add_lognormal_uncertainty("catMigration_CMS_VV_llj_ELELP",-0.24,procname=procnamezz,obsname='CMS_ZVeeJ_LP')
+    # ATLAS lvJ
+    model.add_lognormal_uncertainty("normalisation_VVlvJ_atlas",0.1,procname=procnameww,obsname='ATLAS_WVlnJ_MR')
+    model.add_lognormal_uncertainty(lumiSystNameATLAS,lumiSystValueATLAS,procname=procnameww,obsname='ATLAS_WVlnJ_MR')
     if j<11 :
         # ATLAS llJ
         model.add_lognormal_uncertainty("normalisation_VVllJ_atlas",0.1,procname=procnamezz,obsname='ATLAS_ZVllJ_MR')
         model.add_lognormal_uncertainty(lumiSystNameATLAS,lumiSystValueATLAS,procname=procnamezz,obsname='ATLAS_ZVllJ_MR')
-        # ATLAS lvJ
-        model.add_lognormal_uncertainty("normalisation_VVlvJ_atlas",0.1,procname=procnameww,obsname='ATLAS_WVlnJ_MR')
-        model.add_lognormal_uncertainty(lumiSystNameATLAS,lumiSystValueATLAS,procname=procnameww,obsname='ATLAS_WVlnJ_MR')
     # VV JJ
     if j>4 :
         # ATLAS
@@ -191,7 +187,7 @@ for j in range(0,16,1):
         model.add_lognormal_uncertainty("normalisation_VVJJ",0.13,procname=procnamezz,obsname='CMS_JJ_LP')
         model.add_lognormal_uncertainty(lumiSystNameCMS,lumiSystValueCMS,procname=procnamezz,obsname='CMS_JJ_LP')
     #########################################
-    procnamet='WZsemi'+str(mass[j])
+    procnamet='WWWZ'+str(mass[j])
     if (j==0):
       group = {procnamet : [procnamezz, procnameww ]}
     else:
@@ -218,7 +214,7 @@ current = 1
 with open(zfile, 'w') as fff:
     while current < len(zlevel):
         masse = mass[current]
-        sig='WZsemi'+str(masse)
+        sig='WWWZ'+str(masse)
         zl = zlevel[sig]['Z'][0]
         pl = Z_to_p(zl)
         bf= pl_interval[sig][0][0]
@@ -246,4 +242,5 @@ with open(zfile, 'w') as fff:
         current += 1
 fff.close()
 print rr
+print zfile
 # ../theta/utils2/theta-auto.py analysis_CMS_ATLAS_ZZ_WW_lvJ_llJ_JJ_ourfit.py

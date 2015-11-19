@@ -10,7 +10,7 @@ model = build_model_from_rootfile([
 # print model
 # 
 
-fudge = 1
+fudge = 0
 alternativeBKG = 0
 #alterLabel = '_rescaled'
 #alterLabel = '_rescaled_sideband'
@@ -74,13 +74,9 @@ nll = nll_scan(model, "data", 1, range=[0.0, 25.0])
 
 print expected
 print observed
-#print zlevel
-#print pl_interval
 
 expected.write_txt(expfile)
 observed.write_txt(obsfile)
-#zlevel.write_txt('CMS_ATLAS_VV_JJ_WZ_ourfit_noFudge_zlevel.txt')
-
 
 current = 1
 with open(zfile, 'w') as fff:

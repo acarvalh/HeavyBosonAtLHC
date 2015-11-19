@@ -1,16 +1,16 @@
 model = build_model_from_rootfile([
-                                   "ATLAS_VV_JJ/ATLAS_WW_correct_toSigComp.root",
-                                   # "ATLAS_VV_JJ/ATLAS_WW_correct_toSigComp_rescaled.root",
+                                   #"ATLAS_VV_JJ/ATLAS_WW_correct_toSigComp.root",
+                                    "ATLAS_VV_JJ/ATLAS_WW_correct_toSigComp_rescaled.root",
                                    #"ATLAS_VV_JJ/ATLAS_WW_correct_toSigComp_rescaled_sideband.root",
                                    #"ATLAS_VV_JJ/ATLAS_WWJJ__DATA_noWWname_publicBackground.root",
                                    "ATLAS_VV_JJ/ATLAS_WW_JJ_1fb_SignalRS_noWWname.root",
                                    "ATLAS_VV_JJ/ATLAS_WW_JJ_1fb_Signal_oneSys.root"])
 
-fudge = 1
-alternativeBKG = 0
-#alterLabel = '_rescaled'
+fudge = 0
+alternativeBKG = 1
+alterLabel = '_rescaled'
 #alterLabel = '_rescaled_sideband'
-alterLabel = '_public'
+#alterLabel = '_public'
 
 filename='results/ATLAS_VV_JJ_BulkWW_ourfit'
 fudgeLabel = '_Fudge'
@@ -171,4 +171,5 @@ with open(z22, 'w') as fff:
         fff.write( str(nllLik) )
 fff.close()
 
+print zfile
 # ../theta/utils2/theta-auto.py analysis_ATLAS_BulkWW_JJ_ourfit.py

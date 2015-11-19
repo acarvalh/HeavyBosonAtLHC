@@ -39,7 +39,7 @@ model = build_model_from_rootfile([# CMS lvJ
 model.fill_histogram_zerobins(epsilon=0.001)
 mass=[1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500]
 
-fudge = 1
+fudge = 0
 
 fudgeWWlvCMS=[1.41025, 1.35686, 1.31496, 1.25667, 1.22709, 1.20154, 1.18648, 1.19411, 1.15167, 1.18859, 1.15312, 1.13278, 1.1486, 1.14364, 1.14226, 1.11291] 
 fudgeWZlvJATLAS = [0.795712, 0.929701, 0.936624, 0.980215, 1.03092, 1.04214, 1.07966, 1.04453, 1.0487, 1.00702, 0.959159, 0.880764, 0.787317, 0.729852, 0.674062, 0.645124] 
@@ -123,12 +123,12 @@ for j in range(0,16,1):
     #
     model.add_lognormal_uncertainty("normalisation_CMS_VV_lnuj_MUHP",0.03,procname=procname,obsname='CMS_VV_lnuj_MUHP')
     model.add_lognormal_uncertainty("normalisation_CMS_VV_lnuj_ELEHP",0.037,procname=procname,obsname='CMS_VV_lnuj_ELEHP')
-    model.add_lognormal_uncertainty("normalisation_CMS_WVnnuJ_LP",0.03,procname=procname,obsname='CMS_VV_lnuj_MULP')
+    model.add_lognormal_uncertainty("normalisation_CMS_WV_lnuJ_MULP",0.03,procname=procname,obsname='CMS_VV_lnuj_MULP')
     model.add_lognormal_uncertainty("normalisation_CMS_VV_lnuj_ELELP",0.037,procname=procname,obsname='CMS_VV_lnuj_ELELP')
     # migration
     model.add_lognormal_uncertainty("catMigration_CMS_VV_lnuj_MUHP",0.09,procname=procname,obsname='CMS_VV_lnuj_MUHP')
     model.add_lognormal_uncertainty("catMigration_CMS_VV_lnuj_ELEHP",0.09,procname=procname,obsname='CMS_VV_lnuj_ELEHP')
-    model.add_lognormal_uncertainty("catMigration_CMS_WVnnuJ_LP",-0.24,procname=procname,obsname='CMS_VV_lnuj_MULP')
+    model.add_lognormal_uncertainty("catMigration_CMS_WV_lnuJ_MULP",-0.24,procname=procname,obsname='CMS_VV_lnuj_MULP')
     model.add_lognormal_uncertainty("catMigration_CMS_VV_lnuj_ELELP",-0.24,procname=procname,obsname='CMS_VV_lnuj_ELELP')
     # CMSllJ
     model.add_lognormal_uncertainty(lumiSystNameCMS,lumiSystValueCMS,procname=procname,obsname='CMS_ZVmmJ_HP')
@@ -143,7 +143,7 @@ for j in range(0,16,1):
     ## migration
     model.add_lognormal_uncertainty("catMigration_CMS_VV_llj_MUHP",0.09,procname=procname,obsname='CMS_ZVmmJ_HP')
     model.add_lognormal_uncertainty("catMigration_CMS_VV_llj_ELEHP",0.09,procname=procname,obsname='CMS_ZVeeJ_HP')
-    model.add_lognormal_uncertainty("catMigration_CMS_WVllJ_LP",-0.24,procname=procname,obsname='CMS_ZVmmJ_LP')
+    model.add_lognormal_uncertainty("catMigration_CMS_WV_llJ_LP",-0.24,procname=procname,obsname='CMS_ZVmmJ_LP')
     model.add_lognormal_uncertainty("catMigration_CMS_VV_llj_ELELP",-0.24,procname=procname,obsname='CMS_ZVeeJ_LP')
     if j<11 :
         # ATLAS llJ
@@ -158,9 +158,9 @@ for j in range(0,16,1):
         model.add_lognormal_uncertainty("normalisation_VVJJ_atlas",0.226,procname=procname,obsname='ATLAS_VV_JJ')
         model.add_lognormal_uncertainty(lumiSystNameATLAS,lumiSystValueATLAS,procname=procname,obsname='ATLAS_VV_JJ')
         # CMS syst
-        model.add_lognormal_uncertainty("normalisation_VVJJ",0.13,procname=procname,obsname='CMS_JJ_HP')
+        model.add_lognormal_uncertainty("normalisation_VVJJ_cms",0.13,procname=procname,obsname='CMS_JJ_HP')
         model.add_lognormal_uncertainty(lumiSystNameCMS,lumiSystValueCMS,procname=procname,obsname='CMS_JJ_HP')
-        model.add_lognormal_uncertainty("normalisation_VVJJ",0.13,procname=procname,obsname='CMS_JJ_LP')
+        model.add_lognormal_uncertainty("normalisation_VVJJ_cms",0.13,procname=procname,obsname='CMS_JJ_LP')
         model.add_lognormal_uncertainty(lumiSystNameCMS,lumiSystValueCMS,procname=procname,obsname='CMS_JJ_LP')
 
 zlevel = zvalue_approx(model, "data", 1)

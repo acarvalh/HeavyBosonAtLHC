@@ -54,8 +54,7 @@ model.set_signal_processes("WZ*")
 model.fill_histogram_zerobins(epsilon=0.001)
 #mass=[1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500]
 
-for j in range(0,16,1): 
-    #    # model.scale_predictions(0.5,procname=procname,obsname='ATLAS_VV_JJ_ZZ')#The fudge factor    
+for j in range(0,16,1):    
     procname = "WZ"+str(mass[j])
     #####################################################################################################
     # Fudge
@@ -82,7 +81,7 @@ for j in range(0,16,1):
     ## migration
     model.add_lognormal_uncertainty("catMigration_CMS_VV_llj_MUHP",0.09,procname=procname,obsname='CMS_ZVmmJ_HP')
     model.add_lognormal_uncertainty("catMigration_CMS_VV_llj_ELEHP",0.09,procname=procname,obsname='CMS_ZVeeJ_HP')
-    model.add_lognormal_uncertainty("catMigration_CMS_WVllJ_LP",-0.24,procname=procname,obsname='CMS_ZVmmJ_LP')
+    model.add_lognormal_uncertainty("catMigration_CMS_WV_llJ_MULP",-0.24,procname=procname,obsname='CMS_ZVmmJ_LP')
     model.add_lognormal_uncertainty("catMigration_CMS_VV_llj_ELELP",-0.24,procname=procname,obsname='CMS_ZVeeJ_LP')
     # ATLAS ZZ llJ
     if j<11 :

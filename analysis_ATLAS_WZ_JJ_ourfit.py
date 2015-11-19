@@ -1,13 +1,13 @@
 model = build_model_from_rootfile([
-                                   #"ATLAS_VV_JJ/ATLAS_WZ_correct_toSigComp.root",
+                                   "ATLAS_VV_JJ/ATLAS_WZ_correct_toSigComp.root",
                                    #"ATLAS_VV_JJ/ATLAS_WZ_correct_toSigComp_rescaled.root",
                                    #"ATLAS_VV_JJ/ATLAS_WZ_correct_toSigComp_rescaled_sideband.root",
-                                   "ATLAS_VV_JJ/ATLAS_WZJJ__DATA_noWZname_publicBackground.root",
+                                   #"ATLAS_VV_JJ/ATLAS_WZJJ__DATA_noWZname_publicBackground.root",
                                    "ATLAS_VV_JJ/ATLAS_WZ_JJ_1fb_SignalWPrime_noWZname.root",
                                    "ATLAS_VV_JJ/ATLAS_WZ_JJ_1fb_Signal_oneSys.root"])
 
 fudge = 0
-alternativeBKG = 1
+alternativeBKG = 0
 #alterLabel = '_rescaled'
 #alterLabel = '_rescaled_sideband'
 alterLabel = '_public'
@@ -166,4 +166,5 @@ with open(z22, 'w') as fff:
         fff.write( str(nllLik) )
 fff.close()
 
+print zfile
 # ../theta/utils2/theta-auto.py analysis_ATLAS_WZ_JJ_ourfit.py
