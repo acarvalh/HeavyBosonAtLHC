@@ -37,7 +37,7 @@ model = build_model_from_rootfile([# CMS lvJ WW
 # 
 # print model
 
-rr = 10
+rr = 2
 print rr
 rww =  rr/(1.+rr)
 rzz =  1./(1+rr)
@@ -113,6 +113,11 @@ for j in range(0,16,1):
         if j>4 :
             model.scale_predictions(fudgeWWJJATLAS[j]*rww*narrow*window,procname=procnameww,obsname='ATLAS_VV_JJ')
             model.scale_predictions(fudgeZZJJATLAS[j]*rzz*narrow*window,procname=procnamezz,obsname='ATLAS_VV_JJ')
+            # CMS JJ - always the same multiplicative factor
+            model.scale_predictions(rww,procname=procnameww,obsname="CMS_JJ_HP")#The fudge factor                                                    
+            model.scale_predictions(rzz,procname=procnamezz,obsname="CMS_JJ_HP")#The fudge factor  
+            model.scale_predictions(rww,procname=procnameww,obsname="CMS_JJ_LP")#The fudge factor                                                    
+            model.scale_predictions(rzz,procname=procnamezz,obsname="CMS_JJ_LP")#The fudge factor 
     else : 
         # CMS llJ
         model.scale_predictions(rzz,procname=procnamezz,obsname='CMS_ZVmmJ_HP')
@@ -124,12 +129,19 @@ for j in range(0,16,1):
         model.scale_predictions(rww,procname=procnameww,obsname='CMS_VV_lnuj_MULP')#The fudge factor    
         model.scale_predictions(rww,procname=procnameww,obsname='CMS_VV_lnuj_ELEHP')#The fudge factor    
         model.scale_predictions(rww,procname=procnameww,obsname='CMS_VV_lnuj_ELELP')#The fudge factor   
+        # ATLAS lvJ
+        model.scale_predictions(fudgeWWlvJATLAS[j],procname=procnameww,obsname='ATLAS_WVlnJ_MR')
         # ATLAS llJ
         if j<11 :
             model.scale_predictions(rzz,procname=procnamezz,obsname='ATLAS_ZVllJ_MR')#The fudge factor
         if j>4 :
             model.scale_predictions(rww*narrow*window,procname=procnameww,obsname='ATLAS_VV_JJ')
-            model.scale_predictions(rzz*narrow*window,procname=procnamezz,obsname='ATLAS_VV_JJ')
+            model.scale_predictions(rzz*narrow,procname=procnamezz,obsname='ATLAS_VV_JJ')
+            # CMS JJ - always the same multiplicative factor
+            model.scale_predictions(rww,procname=procnameww,obsname="CMS_JJ_HP")#The fudge factor                                                    
+            model.scale_predictions(rzz,procname=procnamezz,obsname="CMS_JJ_HP")#The fudge factor  
+            model.scale_predictions(rww,procname=procnameww,obsname="CMS_JJ_LP")#The fudge factor                                                    
+            model.scale_predictions(rzz,procname=procnamezz,obsname="CMS_JJ_LP")#The fudge factor 
     ##########################################################################################################
     # systematics
     # CMS lvJ
